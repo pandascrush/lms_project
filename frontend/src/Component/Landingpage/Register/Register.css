@@ -1,0 +1,80 @@
+.RegisterApp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  background-image: linear-gradient(135deg, #841ecc, #e585c4);
+}
+
+.register-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 600px; /* Adjust the maximum width as needed */
+  width: 100%;
+}
+.login-form {
+  padding: 20px;
+  flex: 1;
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+button {
+  padding: 10px 20px;
+  background-color: #841ecc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* button:hover {
+  background-color: #841ECC;
+}   */
+.login-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.logintxt {
+  color: #841ecc;
+}
+
+.form-group input {
+  width: 100%;
+  max-width: 300px; /* Adjust the maximum width as needed */
+
+  box-sizing: border-box;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}

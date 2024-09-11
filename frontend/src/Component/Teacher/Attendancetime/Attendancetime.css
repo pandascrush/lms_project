@@ -1,0 +1,49 @@
+.purplebox{
+    background-color: #76049b;
+    color: #fff;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    padding: 5px;
+}
+.greettext{
+    color:#76049b;  
+}
+.cardboxes{
+    background-color: #2C314F !important;
+}
+
+.purple1{
+    background-color: #fff;
+    color:#76049b;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 25px;
+    border: 1px dashed #76049b;
+}
+
+.shadowpart {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+  }
+  
+  .card label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .datetime-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+
+  
+  

@@ -1,0 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+.navbar-brand {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.nav-icon {
+  color: white;
+  margin-left: 15px;
+  font-size: 1.2rem;
+}
+
+.input-group {
+  max-width: 300px;
+}
+
+.input-group .form-control {
+  border-radius: 0;
+}
+
+@media (max-width: 991px) {
+  .input-group {
+    width: 100%;
+  }
+}
+
+.navpart {
+  border-radius: 22px;
+  color: #2f3047 !important;
+  margin: 0px 5px;
+  font-size: 18px !important;
+  line-height: 21.94px;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.navpart:hover {
+  background-color: #001040;
+  color: white !important;
+  border-radius: 25px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.imglogin {
+  height: 32px;
+  width: 32px;
+}
+
+.navpart {
+  font-weight: 500;
+  font-size: 18px !important;
+}
+
+.searchinput {
+  outline: none;
+  box-shadow: none;
+}
+
+.searchinput:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.search-icon {
+  color: #888888;
+  font-size: 20px;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+.searchinput::placeholder {
+  color: #ada9a9;
+  opacity: 1;
+  padding: 0px 7px;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+/* ///// */
+
+/* Style for the search bar container */
+.search-bar {
+  display: flex;
+  align-items: center;
+  border-radius: 50px;
+  padding: 14px 20px !important;
+  box-shadow: 1px 1px 10px 1px #d9d9d9;
+}
+
+/* .navbarcontenttext{
+  letter-spacing: 0.8px;
+} */
+
+.navbarcontenttext .navpart .active-link {
+  color: purple !important;
+  background-color: red;
+}
+
+/* Additional styling to ensure the text is visible on red background */
+.navbarcontenttext .navpart .active-link:hover {
+  color: purple !important;
+  background-color: red !important;
+}
+
+/* Make search bar appear at start on small to medium devices */
+@media (max-width: 992px) {
+  .search-bar {
+    order: -1; /* Position the search bar before other items */
+    width: 100%;
+  }
+}

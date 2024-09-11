@@ -1,0 +1,32 @@
+.lessoncard{
+    background-color: white;
+    color: #3C0B56;
+    text-align: left !important;
+    box-shadow: 1px 1px 10px 1px #b889d2;
+}
+
+.lesson{
+    max-height: 250px;
+}
+
+.arrowclr{
+    color: #3C0B56;
+}
+
+@media (max-width:425px){
+    .lesson{
+        max-height: 70px;
+    } 
+}
+@media (min-width:426px) and (max-width:768px){
+    .lesson{
+        height: 150px;
+    } 
+}
+
+@media (min-width:769px){
+    .lesson{
+        height: 170px;
+        width: 270px;
+    } 
+}

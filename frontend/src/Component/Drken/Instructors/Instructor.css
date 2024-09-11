@@ -1,0 +1,49 @@
+.authortext{
+  color:  #6705AD;
+  font-weight: 700;
+}
+.aboutDr{
+  text-align: justify;
+  }
+ 
+  
+  .overviewcontent{
+      font-family: 'Montserrat', sans-serif !important;
+  }
+  
+  .abtken{
+      font-weight: 500;
+  }
+  .secondpara{
+      text-align: justify;
+  }
+  .certificatecards{
+      background-color: #FBF3FF;
+      box-shadow: 1px 1px 3px 3px #cecdce; 
+  }
+
+  .certifiedheading{
+      color: #6705AD;
+      font-weight: 700;
+  }
+  
+  @media (max-width:426px){
+      .drimg{
+          max-height: 300px;
+          max-width: 300px;
+      }
+  }
+
+ li::marker{
+  color: #6705AD;
+  font-size: 20px;
+ }
+
+ ul li{
+  padding-top: 15px;
+  padding-bottom: 10px;
+ }
+
+ .imgcertificate{
+  max-height: 150px;
+ }

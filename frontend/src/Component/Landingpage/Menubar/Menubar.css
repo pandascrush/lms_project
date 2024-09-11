@@ -1,0 +1,175 @@
+/* body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #841ECC;
+    padding: 20px 70px;
+  }
+  
+  .navbar .logo {
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+  }
+  
+  .navbar .menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar .menu li {
+    margin: 0 15px;
+  }
+  
+  .navbar .menu li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+  .navbar .right-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar .right-section .icon {
+    color: white;
+    font-size: 24px;
+    margin-left: 20px;
+    cursor: pointer;
+  }
+
+  .box{
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 30px;
+    align-items: center;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
+  }
+
+  .box input{
+    width: 0;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    transition: 0.8s;
+    background: transparent;
+  }
+  .box:hover input{
+    width:200px
+  }
+
+  .box a .fas{
+    background-color: #841ECC;
+    
+  }
+
+
+
+  @media (max-width: 768px) {
+    .navbar .menu {
+      display: none;
+    }
+    .navbar .right-section {
+      display: none;
+    }
+  }
+   */
+
+
+
+
+
+
+  /* Menubar.css */
+
+.navbar-brand {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.nav-icon {
+  color: white;
+  margin-left: 15px;
+  font-size: 1.2rem;
+}
+
+.input-group {
+  max-width: 300px;
+}
+
+.input-group .form-control {
+  border-radius: 0;
+}
+
+.input-group-text {
+  background-color: #841ecc;
+  border: none;
+  color: #999;
+}
+
+@media (max-width: 991px) {
+  .input-group {
+    width: 100%;
+  }
+}
+.navbarbgcolour{
+  background-color: #841ecc;
+  color: white;
+}
+
+.box{
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  padding: 10px 20px;
+  background-color: white;
+  border-radius: 30px;
+  align-items: center;
+  box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
+}
+
+.box input{
+  width: 0;
+  outline: none;
+  border: none;
+  font-weight: 500;
+  transition: 0.8s;
+  background: transparent;
+}
+.box:hover input{
+  width:200px
+}
+
+.box a .fas{
+  background-color: #841ECC;  
+}
+
+
+@media (max-width:1000px){
+  .box{
+    width: 100px;
+  }
+  .box:hover input{
+    width:100px
+  }
+}
+
+
+
+

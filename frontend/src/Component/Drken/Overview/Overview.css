@@ -1,0 +1,33 @@
+.txtclr{
+    color: #6705AD;
+    font-weight: 600;
+    font-size: 20px !important;  
+}
+
+.bolderheading{
+font-weight: 600;
+}
+
+.storytext{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.8rem;
+    text-align: justify;
+}
+
+.storypart{
+    padding: 0px 0px;
+}
+
+@media (max-width:425px){
+    
+    .storytext{
+        text-align: justify;
+    }
+}
+
+@media (min-width:426px){
+    .storypart{
+        padding: 0px 100px;
+    }
+}
