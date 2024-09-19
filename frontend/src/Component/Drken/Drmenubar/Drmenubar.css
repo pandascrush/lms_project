@@ -98,13 +98,13 @@
 } */
 
 .navbarcontenttext .navpart .active-link {
-  color: purple !important;
+  color: #2f3047  !important;
   background-color: red;
 }
 
 /* Additional styling to ensure the text is visible on red background */
 .navbarcontenttext .navpart .active-link:hover {
-  color: purple !important;
+  color: #2f3047  !important;
   background-color: red !important;
 }
 

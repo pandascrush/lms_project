@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b3ea0be8.css",
+    "main.js": "/static/js/main.62e48351.js",
+    "static/js/453.959afbf3.chunk.js": "/static/js/453.959afbf3.chunk.js",
+    "static/media/who suffers.png": "/static/media/who suffers.eb8d081425f2b6b3f262.png",
+    "static/media/Bannerimage.png": "/static/media/Bannerimage.f85226ee87ce902e787f.png",
+    "static/media/Group 270989695.png": "/static/media/Group 270989695.ecd87505dc741b43a3c8.png",
+    "static/media/graduatedgirl.png": "/static/media/graduatedgirl.db74da16fa41d75ebc86.png",
+    "static/media/face.png": "/static/media/face.6ebc62641e0e79631c37.png",
+    "static/media/stud2.png": "/static/media/stud2.9de9d41194de0450bc03.png",
+    "static/media/coursecontent3.jpg": "/static/media/coursecontent3.8a9bf9b4c6d29f7f1980.jpg",
+    "static/media/lapcard.png": "/static/media/lapcard.a682146973bb460d4741.png",
+    "static/media/Coursecontent2.jpg": "/static/media/Coursecontent2.cd402376db2494142aa9.jpg",
+    "static/media/coursecontent1.jpg": "/static/media/coursecontent1.bc76e9d8b37579073cc3.jpg",
+    "static/media/certificate.png": "/static/media/certificate.998b9ecd1ac5ab077391.png",
+    "static/media/3dcomputer.png": "/static/media/3dcomputer.b6fe8eb477608433eb5d.png",
+    "static/media/3dcertificate.png": "/static/media/3dcertificate.0d115b7de418aa281393.png",
+    "static/media/3dspine.png": "/static/media/3dspine.b63aca2765d2c9d985e8.png",
+    "static/media/review.png": "/static/media/review.a05fe4796a57cfa8b3f4.png",
+    "index.html": "/index.html",
+    "main.b3ea0be8.css.map": "/static/css/main.b3ea0be8.css.map",
+    "main.62e48351.js.map": "/static/js/main.62e48351.js.map",
+    "453.959afbf3.chunk.js.map": "/static/js/453.959afbf3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b3ea0be8.css",
+    "static/js/main.62e48351.js"
+  ]
+}

@@ -22,8 +22,6 @@ import Sidebarcomp from "./Component/sidebarcomp/sidebarcomp";
 import DashboardLayout from "./Component/DashboardLayout/DashboardLayout";
 import Admindashboard from "./Component/Admin/Admindashboard/Admindashboard";
 import Courseupdation from "./Component/Admin/Courseupdation/Courseupdation";
-import Coursecontent from "./Component/Admin/Coursecontent/Coursecontent";
-import Modulepage from "./Component/Admin/Modulepage/Modulepage";
 import Dashboardinstructor from "./Component/Instructor/Dashboardinstructor/Dashboardinstructor";
 import Sidebarinstructor from "./Component/Instructor/Sidebarinstructor/Sidebarinstructor";
 import Ongoingclass from "./Component/Student/OngoingClass/Ongoingclass";
@@ -33,7 +31,7 @@ import Categorycreation from "./Component/Admin/Categorycreation/Categorycreatio
 import CategoryDropdown from "./Component/Instructor/Categorytree/CategoryDropdown";
 import EditorComponent from "./Component/Instructor/Rcheditor/Rcheditor";
 import Question from "./Component/Instructor/Question/Question";
-import DisplayContent from "./Component/Admin/Coursecontent/DisplayContent";
+// import DisplayContent from "./Component/Admin/Coursecontent/DisplayContent";
 import CategoryQuizList from "./Component/Instructor/Questionbank/CategoryQuizList";
 import Courselist from "./Component/Instructor/Courselist/Courselist";
 import Drkenhome from "./Component/Drken/Drkenhomepage/Drkenhome";
@@ -50,6 +48,17 @@ import Availablecourses from "./Component/Drken/Availablecourses/Availablecourse
 // import QuestionDisplay from "./Component/Drken/Coursevideos/Questiondisplay";
 import Kencoursedashboard from "./Component/Drken/Kencoursedashboard/Kencoursedashboard";
 import CourseVideos from "./Component/Drken/Coursevideos/Coursevideos";
+import DrmenubarUser from "./Component/Drken/Drmenubar/DrmenubarUser";
+import AddCategory from "./Component/Instructor/AddCategory/AddCategory";
+import AddCourse from "./Component/Instructor/AddCourse/AddCourse";
+import Modulepage from "./Component/Instructor/Modulepage/Modulepage";
+import Coursecontent from "./Component/Instructor/Coursecontent/Coursecontent";
+import ModuleUpdate from "./Component/Instructor/ModuleUpdate/ModuleUpdate";
+import CoursecontentUpdate from "./Component/Instructor/CoursecontentUpdate/CoursecontentUpdate";
+import QuestionUpdate from "./Component/Instructor/QuestionUpdate/QuestionUpdate";
+import Module from "./Component/Instructor/Module/Module";
+import CourseContentPage from "./Component/Instructor/CourseContentPage/CourseContentPage";
+import QuestionPage from "./Component/Instructor/QuestionPage/QuestionPage";
 
 // import RichTextEditor from './Component/Instructor/Richtexteditor/Richtexteditor';
 
@@ -61,8 +70,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterPage />} />
           {/* <Route path="/" element={[<Menubar />, <Banner />, <Footer />]} /> */}
-         
-        
+
           <Route
             path="/progress"
             element={[
@@ -72,7 +80,7 @@ function App() {
               <Footer />,
             ]}
           />
-     
+
           <Route
             path="/completed"
             element={[
@@ -83,7 +91,7 @@ function App() {
             ]}
           />
           <Route path="/course" element={<Contentmodule />} />
-  
+
           <Route
             path="/ongoing"
             element={[<Menubar />, <Coursemenubar />, <Ongoingclass />]}
@@ -113,11 +121,18 @@ function App() {
             element={<Dashboardinstructor />}
           >
             <Route path="courselist" element={<Courselist />} />
-            <Route path="coursecontent" element={<Coursecontent />} />
-            <Route path="displaycontent" element={<DisplayContent />} />
-            <Route path="coursemodule" element={<Modulepage />} />
-            <Route path="quilltxt" element={<Question />} />
+            <Route path="coursecontent" element={<CourseContentPage />} />
+            <Route path="addpagecontent" element={<Coursecontent />} />
+            <Route path="updatepagecontent" element={<CoursecontentUpdate />} />
+            <Route path="coursemodule" element={<Module />} />
+            <Route path="addmodule" element={<Modulepage />} />
+            <Route path="updatemodule" element={<ModuleUpdate />} />
+            <Route path="quilltxt" element={<QuestionPage />} />
+            <Route path="addquestion" element={<Question />} />
+            <Route path="updatequestion" element={<QuestionUpdate />} />
             <Route path="questionbank" element={<CategoryQuizList />} />
+            <Route path="category" element={<AddCategory />} />
+            <Route path="coursecreation" element={<AddCourse />} />
           </Route>
           <Route path="/instructorsidebar" element={<Sidebarinstructor />} />
           <Route
@@ -130,21 +145,34 @@ function App() {
           {/* //DrKen */}
           {/* <Route path="/cr" element={[<Drmenubar />, <Coursevideos/>]} /> */}
           <Route path="/" element={[<Drmenubar />, <Drkenhome />]} />
-          <Route path="/:id" element={[<Drmenubar />, <Drkenhome />]} />
-          <Route path="/videos" element={[<Drmenubar />, <Videocontent />]} />
-          <Route path="/grade" element={[<Drmenubar />, <Grade />]} />
           <Route
-            path="/badge"
-            element={[<Drmenubar />, <CertificateBadge />]}
+            path="/user/:id"
+            element={[<DrmenubarUser />, <Drkenhome />]}
+          />
+          <Route
+            path="/videos/:id"
+            element={[<DrmenubarUser />, <Videocontent />]}
+          />
+          <Route path="/grade/:id" element={[<DrmenubarUser />, <Grade />]} />
+          <Route
+            path="/badge/:id"
+            element={[<DrmenubarUser />, <CertificateBadge />]}
           />
           {/* <Route path="/courseview" element={<Courseview/>}/> */}
           <Route path="/lesson" element={<Lessons />} />
           <Route path="/instructor" element={<Instructors />} />
           <Route path="/courseoverview" element={<Overview />} />
           <Route path="/courseview" element={<Courseview />} />
-          <Route path="/allcourselist" element={<Availablecourses />} />
+          <Route path="/allcourselist/:id" element={<Availablecourses />} />
           {/* <Route path="/quizquestions" element={<QuestionDisplay />} /> */}
-          <Route path="/ken/:course/:module" element={<CourseVideos />} />
+          <Route
+            path="/ken/:course/:module/:id"
+            element={[<DrmenubarUser />, <CourseVideos />]}
+          />
+          <Route
+            path="/ken/:course/:module/undefined"
+            element={[<Drmenubar />, <CourseVideos />]}
+          />
         </Routes>
       </BrowserRouter>
     </div>

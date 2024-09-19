@@ -15,7 +15,7 @@ function Courseupdation() {
   }, []);
 
   const fetchCategories = () => {
-    axios.get(`http://192.168.252.191:5000/category/getcategory`).then((res) => {
+    axios.get(`${process.env.REACT_APP_API_URL}category/getcategory`).then((res) => {
       const fetchedCategories = res.data.result.map((category) => ({
         name: category.course_category_name,
         id: category.course_category_id,
@@ -37,7 +37,7 @@ function Courseupdation() {
     if (newCategory.trim() === "") return;
 
     axios
-      .post(`http://192.168.252.191:5000/category/addcategory`, {
+      .post(`${process.env.REACT_APP_API_URL}category/addcategory`, {
         course_category_name: newCategory,
       })
       .then((response) => {
@@ -91,7 +91,7 @@ function Courseupdation() {
     try {
       // Send the form data to the backend API
       const response = await axios.post(
-        "http://192.168.252.191:5000/course/addcourse",
+        `${process.env.REACT_APP_API_URL}course/addcourse`,
         formData,
         {
           headers: {

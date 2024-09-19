@@ -9,13 +9,18 @@
     max-height: 250px;
 }
 
-.arrowclr{
+.arrowclr,.clrcrd{
     color: #3C0B56;
 }
 
 @media (max-width:425px){
     .lesson{
-        max-height: 70px;
+        max-height: 150px;
+        max-width: 250px;
+    }
+    .lessonview{
+        display: flex;
+        flex-direction: column;
     } 
 }
 @media (min-width:426px) and (max-width:768px){
@@ -29,4 +34,9 @@
         height: 170px;
         width: 270px;
     } 
+    .lessonview{
+        display: flex;
+        flex-direction: row;
+        color: #6705AD;
+    }
 }

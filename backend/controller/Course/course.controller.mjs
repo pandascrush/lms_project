@@ -86,6 +86,49 @@ export const addCourse = (req, res) => {
   }
 };
 
+export const getAllCourses= (req, res) => {
+  const query = `
+    SELECT 
+      c.course_desc,
+      c.coursename, 
+      c.course_image, 
+      c.course_start_date, 
+      c.course_end_date, 
+      c.created_at,
+      COUNT(m.moduleid) AS module_count
+    FROM 
+      courses AS c
+    LEFT JOIN 
+      modules AS m ON c.courseid = m.courseid
+    GROUP BY 
+      c.courseid;
+  `;
+
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No courses found" });
+    }
+
+    const courses = results.map(course => ({
+      coursename: course.coursename,
+      course_image: `${process.env.URL}${course.course_image}`,
+      course_start_date: course.course_start_date,
+      course_end_date: course.course_end_date,
+      created_at: course.created_at,
+      module_count: course.module_count, // Count of modules
+    }));
+
+    res.json(courses);
+  });
+};
+
+
+// Module Section
 export const addModule = (req, res) => {
   const {
     moduleNames,
@@ -223,6 +266,71 @@ export const addModule = (req, res) => {
   });
 };
 
+export const updateModule = (req, res) => {
+  const { moduleid, modulename } = req.body;
+
+  if (!moduleid || !modulename) {
+    return res.json({ error: "Module ID and name are required" });
+  }
+
+  const sql = `UPDATE modules SET modulename = ? WHERE moduleid = ?`;
+
+  db.query(sql, [modulename, moduleid], (error, result) => {
+    if (error) {
+      console.error("Error updating module:", error);
+      return res.json({ error: "Failed to update module" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.json({ error: "Module not found" });
+    }
+
+    res.status(200).json({ message: "Module updated successfully" });
+  });
+};
+
+export const getModulePageContent = (req, res) => {
+  const { moduleid } = req.params;
+
+  db.query(
+    "SELECT page_content,pageid FROM pages WHERE moduleid = ?",
+    [moduleid],
+    (err, content) => {
+      if (err) {
+        console.error("Error fetching module content:", err);
+        return res
+          .status(500)
+          .json({ error: "Failed to fetch module content" });
+      }
+      res.json({ result: content });
+    }
+  );
+};
+
+export const updatePageContent = (req, res) => {
+  const { contentid, pagecontent } = req.body;
+
+  console.log(contentid, pagecontent);
+
+  if (!contentid || !pagecontent) {
+    return res
+      .status(400)
+      .json({ error: "Content ID and new content are required" });
+  }
+
+  db.query(
+    "UPDATE pages SET page_content = ? WHERE pageid = ?",
+    [pagecontent, contentid],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating content:", err);
+        return res.json({ error: "Failed to update content" });
+      }
+      res.status(200).json({ message: "Content updated successfully" });
+    }
+  );
+};
+
 export const getCourse = (req, res) => {
   const getCourses = `select * from courses`;
 
@@ -272,7 +380,7 @@ export const getModuleByCourseId = async (req, res) => {
 
 export const getModulesByCourseId = (req, res) => {
   const { courseId } = req.params; // Assuming courseId is passed as a route parameter
-  const baseUrl = "http://192.168.252.191:5000"; // Base URL for images
+  const baseUrl = "http://localhost:5000"; // Base URL for images
 
   // Query to get module details, count of quizzes, and count of videos based on courseId
   const query = `
@@ -416,7 +524,7 @@ export const submitCourseContent = (req, res) => {
           INSERT INTO context (instanceid, path, contextlevel, depth)
           VALUES (?, ?, ?, ?)
         `;
-        const contextValues = [moduleId, path, 6, newDepth];
+        const contextValues = [moduleId, path, 6, 2];
 
         db.query(insertContextQuery, contextValues, (err, result) => {
           if (err) {
@@ -477,25 +585,19 @@ export const submitCourseContent = (req, res) => {
 };
 
 export const getStructuredData = (req, res) => {
-  // SQL query to fetch all relevant data including quizzes
+  // SQL query to fetch all relevant data including only modules
   const sql = `
     SELECT 
       c.courseid, 
       c.coursename, 
       m.moduleid, 
       m.modulename, 
-      q.id AS quiz_id, 
-      q.text AS quiz_text,
       ctx_course.contextlevel AS course_contextlevel, 
       ctx_module.contextlevel AS module_contextlevel, 
-      ctx_quiz.contextlevel AS quiz_contextlevel, 
       ctx_course.instanceid AS course_instanceid, 
       ctx_module.instanceid AS module_instanceid, 
-      ctx_quiz.instanceid AS quiz_instanceid, 
       ctx_module.path AS module_path, 
-      ctx_module.depth AS module_depth, 
-      ctx_quiz.path AS quiz_path, 
-      ctx_quiz.depth AS quiz_depth
+      ctx_module.depth AS module_depth
     FROM 
       courses c
     LEFT JOIN 
@@ -503,15 +605,11 @@ export const getStructuredData = (req, res) => {
     LEFT JOIN 
       context ctx_module ON ctx_module.path LIKE CONCAT('%/', c.courseid) AND ctx_module.contextlevel = 5
     LEFT JOIN 
-      context ctx_quiz ON ctx_quiz.path LIKE CONCAT('%/', c.courseid) AND ctx_quiz.contextlevel = 4
-    LEFT JOIN 
       modules m ON m.moduleid = ctx_module.instanceid AND ctx_module.contextlevel = 5
-    LEFT JOIN 
-      quiz_text q ON q.id = ctx_quiz.instanceid AND ctx_quiz.contextlevel = 4
     WHERE 
-      ctx_course.contextlevel = 3 OR ctx_module.contextlevel = 5 OR ctx_quiz.contextlevel = 4
+      ctx_course.contextlevel = 3 OR ctx_module.contextlevel = 5
     ORDER BY 
-      ctx_course.contextlevel, ctx_module.depth, ctx_quiz.depth;
+      ctx_course.contextlevel, ctx_module.depth;
   `;
 
   db.query(sql, (error, results) => {
@@ -533,26 +631,21 @@ export const getStructuredData = (req, res) => {
           courseMap.set(courseid, {
             label: coursename,
             value: `${courseid}`,
-            children: [],
+            children: [], // This will hold the modules
           });
         }
       }
     });
 
-    // Second pass: Add modules and quizzes to build hierarchy
+    // Second pass: Add modules to build hierarchy
     results.forEach((row) => {
       const {
         courseid,
         moduleid,
         modulename,
         module_contextlevel,
-        quiz_id,
-        quiz_text,
-        quiz_contextlevel,
         module_path,
         module_depth,
-        quiz_path,
-        quiz_depth,
       } = row;
 
       // Handling Modules
@@ -567,40 +660,23 @@ export const getStructuredData = (req, res) => {
             const moduleNode = {
               label: modulename || `Module ${moduleid}`,
               value: `${moduleid}`,
-              children: [],
+              children: [], // No quizzes, so leave it empty
             };
 
-            // Directly add module node without unnecessary depth nodes
+            // Add module node to the course
             currentCourse.children.push(moduleNode);
-          }
-        }
-      }
-
-      // Handling Quizzes
-      if (quiz_contextlevel === 4 && quiz_id) {
-        const extractedCourseId = quiz_path ? quiz_path.split("/")[1] : null;
-
-        if (extractedCourseId && extractedCourseId === String(courseid)) {
-          if (courseMap.has(courseid)) {
-            const currentCourse = courseMap.get(courseid);
-            const quizNode = {
-              label: quiz_text || `Quiz ${quiz_id}`,
-              value: `${quiz_id}`,
-              children: [],
-            };
-
-            // Directly add quiz node without unnecessary depth nodes
-            currentCourse.children.push(quizNode);
           }
         }
       }
     });
 
+    // Sort modules by their numeric `value` field (moduleid)
+    courseMap.forEach((course) => {
+      course.children.sort((a, b) => Number(a.value) - Number(b.value));
+    });
+
     // Convert the map to an array
     const structuredData = Array.from(courseMap.values());
-
-    // Debugging: Log the structured data to verify correctness
-    // console.log("Structured Data:", JSON.stringify(structuredData, null, 2));
 
     // Send the response
     res.status(200).json(structuredData);
@@ -894,5 +970,28 @@ const fetchQuestionOptions = (questions, callback) => {
     });
 
     callback(null, questionsWithOptions);
+  });
+};
+
+export const getOtherModules = (req, res) => {
+  const { course, module } = req.params;
+
+  // Define the query to fetch exactly 3 other modules with moduleid greater than the provided moduleid
+  const query = `
+    SELECT * FROM modules 
+    WHERE courseid = ? AND moduleid > ?
+    ORDER BY moduleid
+    LIMIT 3
+  `;
+
+  // Execute the query
+  db.query(query, [course, module], (error, results) => {
+    if (error) {
+      console.error("Error fetching modules:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    // Send the results as a response
+    res.json(results);
   });
 };

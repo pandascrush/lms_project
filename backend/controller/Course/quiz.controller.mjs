@@ -62,6 +62,65 @@ export const addQuestion = (req, res) => {
   });
 };
 
+export const getQuestionByModule = (req, res) => {
+  const { moduleId } = req.params;
+  console.log(moduleId);
+
+  db.query(
+    "SELECT * FROM quiz_text WHERE moduleid = ?",
+    [moduleId],
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching questions:", err);
+        return res.json({
+          error: "Failed to fetch questions",
+        });
+      }
+
+      if (results.length > 0) {
+        res.status(200).json({
+          result: results,
+        });
+      } else {
+        res.json({
+          message: "No questions found for the selected module",
+        });
+      }
+    }
+  );
+};
+
+export const updateQuestionByModule = (req, res) => {
+  const { moduleId, questions } = req.body;
+
+  // console.log(questions);
+
+  // Iterate over each question
+  for (const questionId in questions) {
+    const questionData = questions[questionId];
+    const { text, options, correct_answer } = questionData;
+
+    // Since options is a JSON array, we can store it directly as a JSON field in the database
+    const optionsJson = JSON.stringify(options);
+
+    // Update the question text, correct answer, and options (as JSON)
+    db.query(
+      "UPDATE quiz_text SET text = ?, correct_answer = ?, `option` = ? WHERE id = ?",
+      [text, correct_answer, optionsJson, questionId],
+      (err, result) => {
+        if (err) {
+          console.error("Error updating question:", err);
+          return res
+            .json({ error: "An error occurred while updating the question" });
+        }
+      }
+    );
+  }
+
+  // If everything goes well, send a success response
+  res.json({ message: "Questions updated successfully" });
+};
+
 export const getQuestionsByModuleAndCourse = async (req, res) => {
   const { course, module } = req.params;
   console.log("hii", module);
@@ -310,3 +369,124 @@ export const fetchQuizQuestions = (req, res) => {
     });
   });
 };
+
+export function saveQuizAttempt(req, res) {
+  const { user_id, ass_id, module } = req.params; // Get user_id, ass_id, and module from req.params
+  const { result } = req.body; // Get result from req.body (should be the quiz result array)
+
+  console.log(user_id, ass_id, result);
+
+  // Step 1: Calculate the score based on the number of correct answers
+  const totalQuestions = result.length;
+  const correctAnswers = result.filter(
+    (question) => question.correct === true
+  ).length;
+  const score = Math.round((correctAnswers / totalQuestions) * 100); // Score as a percentage
+
+  console.log(score, totalQuestions, correctAnswers);
+
+  // Step 2: Get the previous attempt count for this user and assessment
+  const queryPreviousAttemptCount = `
+    SELECT attempt_count
+    FROM quiz_attempt
+    WHERE user_id = ? AND assessment_type = ? AND moduleid = ?
+    ORDER BY attempt_timestamp DESC
+    LIMIT 1
+  `;
+
+  db.query(
+    queryPreviousAttemptCount,
+    [user_id, ass_id, module],
+    (err, dbRes) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      let newAttemptCount = 1; // Default to 1 if no previous attempts are found
+
+      // If there are previous attempts, get the latest count and increment
+      if (dbRes.length > 0) {
+        const previousAttempt = dbRes[0];
+        newAttemptCount = previousAttempt.attempt_count + 1;
+      }
+
+      // Step 3: Insert a new row with the new attempt count
+      const queryInsertNewAttempt = `
+      INSERT INTO quiz_attempt (user_id, result, attempt_count, assessment_type, attempt_timestamp, score, moduleid)
+      VALUES (?, ?, ?, ?, NOW(), ?, ?)
+    `;
+
+      db.query(
+        queryInsertNewAttempt,
+        [
+          user_id,
+          JSON.stringify(result),
+          newAttemptCount,
+          ass_id,
+          score,
+          module,
+        ],
+        (insertErr, insertResult) => {
+          if (insertErr) {
+            console.log(insertErr);
+            return res.json({ error: "Error inserting new attempt" });
+          }
+
+          // Step 4: After inserting, retrieve all attempts for the user and assessment_type
+          const queryRetrieveAllAttempts = `
+          SELECT * 
+          FROM quiz_attempt
+          WHERE user_id = ? AND assessment_type = ? AND moduleid = ?
+          ORDER BY attempt_timestamp DESC
+        `;
+
+          db.query(
+            queryRetrieveAllAttempts,
+            [user_id, ass_id, module],
+            (retrieveErr, allAttempts) => {
+              if (retrieveErr) {
+                console.log(retrieveErr);
+                return res.json({ error: "Error retrieving attempts data" });
+              }
+
+              // Process each attempt to add counts for total and correct answers
+              const attemptsWithCounts = allAttempts.map((attempt) => {
+                let parsedResult;
+                try {
+                  parsedResult =
+                    typeof attempt.result === "string"
+                      ? JSON.parse(attempt.result)
+                      : attempt.result;
+                } catch (parseError) {
+                  console.error("Error parsing result:", parseError);
+                  parsedResult = [];
+                }
+
+                // Count the total answers and correct answers
+                const totalAnswers = parsedResult.length;
+                const correctAnswers = parsedResult.filter(
+                  (question) => question.correct
+                ).length;
+
+                // Return the attempt with counts
+                return {
+                  ...attempt,
+                  totalAnswers,
+                  correctAnswers,
+                };
+              });
+
+              // Return all the attempts in the response with counts
+              return res.json({
+                message: "Quiz attempt saved successfully",
+                score,
+                attempts: attemptsWithCounts, // Return attempts with counts
+              });
+            }
+          );
+        }
+      );
+    }
+  );
+}

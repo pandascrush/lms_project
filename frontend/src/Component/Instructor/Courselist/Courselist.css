@@ -1,7 +1,64 @@
-.bgfullpath{
-    height: 100vh;    
+.bgfullpath {
+  height: 100vh;
 }
 
-option{
-    border: none !important;
+option {
+  border: none !important;
+}
+
+.courselist-container {
+  background-color: #f8f9fa; /* Light background color */
+  padding: 20px;
+}
+
+.course-card {
+  transition: transform 0.2s; /* Smooth scaling effect */
+  border-radius: 10px;
+}
+
+/* .course-card:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+} */
+
+.course-image {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  height: 200px; /* Fixed height for images */
+  object-fit: cover; /* Cover to maintain aspect ratio */
+}
+
+.card-title {
+  font-weight: bold; /* Bold titles */
+  font-size: 1.25rem;
+}
+
+.card-text {
+  font-size: 0.9rem; /* Slightly smaller font for text */
+  color: #6c757d; /* Gray color for text */
+}
+
+.text-center {
+  color: #343a40; /* Dark text color for headings */
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem; /* Spacing for better layout */
+}
+.courselist-container {
+  padding: 20px;
+}
+
+.course-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.course-image {
+  object-fit: cover; /* Adjust to maintain aspect ratio */
+  height: 200px; /* Set a specific height for the image */
+}
+
+.card-body {
+  text-align: left;
 }

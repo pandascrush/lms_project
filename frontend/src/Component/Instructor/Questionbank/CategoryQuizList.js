@@ -930,14 +930,14 @@ const CategoryQuizList = () => {
 
   useEffect(() => {
     // Fetch categories from API
-    axios.get(`http://192.168.252.191:5000/course/getmodule`).then((res) => {
+    axios.get(`${process.env.REACT_APP_API_URL}course/getmodule`).then((res) => {
       const { data } = res;
       setCategories(data.result);
     });
   }, []);
 
   useEffect(() => {
-    axios.get(`http://192.168.252.191:5000/quiz/getquiztype`).then((res) => {
+    axios.get(`${process.env.REACT_APP_API_URL}quiz/getquiztype`).then((res) => {
       setQuizTypes(res.data.result);
     });
   }, []);
@@ -947,7 +947,7 @@ const CategoryQuizList = () => {
       // Fetch quizzes based on selected courseId and moduleId
       axios
         .get(
-          `http://192.168.252.191:5000/quiz/questions/${selectedCourseId}/${selectedCategory}`
+          `${process.env.REACT_APP_API_URL}quiz/questions/${selectedCourseId}/${selectedCategory}`
         )
         .then((res) => {
           console.log(res.data);
@@ -1043,7 +1043,7 @@ const CategoryQuizList = () => {
 
     // Send the data to the backend
     axios
-      .post("http://192.168.252.191:5000/quiz/createquiz", {
+      .post(`${process.env.REACT_APP_API_URL}quiz/createquiz`, {
         courseId: selectedCourseId,
         categoryId: selectedCategory,
         questionCount: selectedQuizList.length,

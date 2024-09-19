@@ -16,7 +16,7 @@ function Categorycreation() {
 
   const fetchCategories = () => {
     axios
-      .get("http://192.168.252.191:5000/category/getcategory")
+      .get(`${process.env.REACT_APP_API_URL}category/getcategory`)
       .then((res) => {
         const fetchedCategories = res.data.result.map((category) => ({
           name: category.course_category_name,
@@ -34,7 +34,7 @@ function Categorycreation() {
     if (newCategory.trim() === "") return; // Check if newCategory is empty
 
     axios
-      .post(`http://192.168.252.191:5000/category/addcategory`, {
+      .post(`${process.env.REACT_APP_API_URL}category/addcategory`, {
         course_category_name: newCategory,
       })
       .then((response) => {

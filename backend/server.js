@@ -7,27 +7,30 @@ import authRoute from "./routes/auth.routes.mjs";
 import categoryRoute from "./routes/Course/category.routes.mjs";
 import courseRoute from "./routes/Course/course.routes.mjs";
 import quizRouter from "./routes/Course/quiz.routes.mjs";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
+app.use(cookieParser());
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "*",
-    credentials: "true",
+    origin:`${process.env.DOMAIN}`, // Replace with your client URL
+    credentials: true, // Allow credentials (cookies)
   })
 );
+
 app.use("/auth", authRoute);
 app.use("/category", categoryRoute);
 app.use("/course", courseRoute);
 app.use("/quiz", quizRouter);
 app.use("/uploads", express.static("uploads"));
-//richtext
 
+//richtext
 let richTextContent = "";
 
 app.post("/save", (req, res) => {
@@ -45,6 +48,6 @@ app.get("/test", (req, res) => {
 });
 
 // Start server
-app.listen(port, () => {
+app.listen(`${process.env.PORT}`, () => {
   console.log(`Server running on port ${port}`);
 });

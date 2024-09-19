@@ -1,29 +1,30 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-.lessontext{
-    color: #510058;
-    background-color: #f6f6f6;
-    font-size: 20px !important;
-    box-shadow: 1px 1px 1px 1px rgb(246, 244, 244);
+.lessontext {
+  color: #510058;
+  background-color: #f6f6f6;
+  font-size: 20px !important;
+  box-shadow: 1px 1px 1px 1px rgb(246, 244, 244);
 }
 
 .active-link {
-    font-weight: 800 !important;
-    color: #510058 !important;
-    background-color: #E2B6F6;
-    border-radius: 3px 3px 0px 0px;
-    padding: 5px;
-  }
+  font-weight: 800 !important;
+  color: #510058 !important;
+  background-color: #d8e2ff;
+  border-radius: 3px 3px 0px 0px;
+  padding: 5px;
+}
 
-  .content-area {
-    margin-top: 20px;
-  }
+.content-area {
+  margin-top: 20px;
+}
 
-.iconpara{
-font-weight: 600 !important;
-font-size: 20px;
-text-decoration: none;
+.iconpara {
+  font-weight: 600 !important;
+  font-size: 20px;
+  text-decoration: none;
+  color: #001040;
 }
 
 .video-wrapper {
@@ -34,7 +35,7 @@ text-decoration: none;
   border-radius: 30px;
   overflow: hidden;
   margin: 0 auto;
- 
+
   background-color: white;
 }
 
@@ -47,7 +48,7 @@ text-decoration: none;
   border: 0;
 }
 
-@media (max-width:766px){
+@media (max-width: 766px) {
   .video-wrapper {
     position: relative;
     width: 80%;

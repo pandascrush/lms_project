@@ -62,7 +62,7 @@
 //         password: formData.password2,
 //       };
 //       axios
-//         .post(http://192.168.252.191:5000/auth/register, key)
+//         .post(${process.env.REACT_APP_API_URL}/auth/register, key)
 //         .then((res) => {
 //           if (res.data.message === "User registered successfully.") {
 //             toast.success("Registration Success");
@@ -279,7 +279,7 @@ function RegisterPage() {
       console.log(key);
 
       axios
-        .post("http://192.168.252.191:5000/auth/register", key)
+        .post("${process.env.REACT_APP_API_URL}/auth/register", key)
         .then((res) => {
           if (res.data.message === "All fields are required.") {
             toast.success("All fields are required.");

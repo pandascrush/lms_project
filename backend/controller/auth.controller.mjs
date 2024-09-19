@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import transporter from "../config/email.config.mjs";
 const saltRounds = 10;
-const jwtSecret = "secret";
 
 export const registerUser = (req, res) => {
   const { name, email, phone_no, password } = req.body;
@@ -193,21 +192,22 @@ export const registerUser = (req, res) => {
   );
 };
 
+const jwtSecret = process.env.JWT_SECRET || "your_jwt_secret_key";
 export const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+    return res.json({ message: "Email and password are required" });
   }
 
   // Check if the user exists
   db.query("SELECT * FROM auth WHERE email = ?", [email], (err, results) => {
     if (err) {
-      return res.status(500).json({ message: "Database error" });
+      return res.json({ message: "Database error" });
     }
 
     if (results.length === 0) {
-      return res.json({ message: "Invalid email or password raw data" });
+      return res.json({ message: "Invalid email or password" });
     }
 
     const user = results[0];
@@ -215,7 +215,7 @@ export const login = (req, res) => {
     // Compare the hashed password
     bcrypt.compare(password, user.password, (err, isMatch) => {
       if (err) {
-        return res.status(500).json({ message: "Error comparing passwords" });
+        return res.json({ message: "Error comparing passwords" });
       }
 
       if (!isMatch) {
@@ -223,12 +223,48 @@ export const login = (req, res) => {
       }
 
       // Create a JWT token
-      const token = jwt.sign({ id: user.id, email: user.email }, jwtSecret, {
-        expiresIn: "1h",
+      const token = jwt.sign({ id: user.id }, jwtSecret, {
+        expiresIn: "1h", // Token expires in 1 hour
       });
 
-      // Respond with the token
-      res.json({ message: "login success", token, user});
+      // Set the JWT token in a cookie
+      res.cookie("authToken", token, {
+        httpOnly: true, // Prevent JavaScript from accessing the cookie
+        maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+        path: "/",        // Make the cookie available across the whole site
+      });
+
+      // Send response along with the token and user data
+      res.json({ message: "login success", token, user });
     });
+  });
+};
+
+export const logout = (req, res) => {
+  // Clear the authentication token from the cookies
+  res.clearCookie("authToken", {
+    httpOnly: true,  // Ensure JavaScript cannot access the cookie
+    path: "/",       // Clear cookie across the entire domain
+    maxAge: 0,       // Immediately expire the cookie
+  });
+
+  // Send a response confirming the logout
+  res.json({ message: "Logged out successfully" });
+};
+
+export const checkToken = (req, res) => {
+  const token = req.cookies.authToken;
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  jwt.verify(token, jwtSecret, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Token is valid
+    res.json({ message: "Token is valid", userId: decoded.id });
   });
 };

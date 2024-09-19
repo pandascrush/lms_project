@@ -67,7 +67,7 @@
 //   };
 
 //   const saveContent = () => {
-//     axios.post('http://192.168.252.191:5000/save', { content: editorContent })
+//     axios.post('${process.env.REACT_APP_API_URL}/save', { content: editorContent })
 //       .then(response => {
 //         console.log('Content saved:', response.data.message);
 //       })
@@ -226,7 +226,7 @@
 //   };
 
 //   const saveContent = () => {
-//     axios.post('http://192.168.252.191:5000/save', { content: newQuestion })
+//     axios.post('${process.env.REACT_APP_API_URL}/save', { content: newQuestion })
 //       .then(response => {
 //         console.log('Content saved:', response.data.message);
 //       })
