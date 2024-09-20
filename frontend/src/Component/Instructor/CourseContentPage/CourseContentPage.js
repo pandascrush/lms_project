@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-
+import "./CourseContentPage.css";
 function CourseContentPage() {
   const { id } = useParams();
 
   return (
-    <div className="d-flex p-3 gap-3">
+    <div className="d-flex justify-content-between bg-light p-3 gap-3">
       <Link
         className="btn"
         style={{ backgroundColor: "#001040", color: "white" }}

@@ -7,58 +7,91 @@ option {
 }
 
 .courselist-container {
-  background-color: #f8f9fa; /* Light background color */
   padding: 20px;
 }
 
-.course-card {
-  transition: transform 0.2s; /* Smooth scaling effect */
-  border-radius: 10px;
+.heading-center {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-/* .course-card:hover {
-  transform: scale(1.05); 
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-} */
-
-.course-image {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  height: 200px; /* Fixed height for images */
-  object-fit: cover; /* Cover to maintain aspect ratio */
-}
-
-.card-title {
-  font-weight: bold; /* Bold titles */
-  font-size: 1.25rem;
-}
-
-.card-text {
-  font-size: 0.9rem; /* Slightly smaller font for text */
-  color: #6c757d; /* Gray color for text */
-}
-
-.text-center {
-  color: #343a40; /* Dark text color for headings */
-}
-
-.mb-4 {
-  margin-bottom: 1.5rem; /* Spacing for better layout */
-}
-.courselist-container {
-  padding: 20px;
-}
-
-.course-card {
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.course-image {
-  object-fit: cover; /* Adjust to maintain aspect ratio */
-  height: 200px; /* Set a specific height for the image */
-}
-
-.card-body {
+.text-start {
   text-align: left;
+}
+
+.course-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.course-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.inner-card {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.course-image-card {
+  text-align: center;
+}
+
+.course-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.course-title {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Course Details Card */
+.course-details-card {
+  text-align: left;
+}
+
+.details-heading {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.details-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* User Stats Card */
+.user-stats-card {
+  text-align: left;
+}
+
+.stats-heading {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.stats-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .course-card {
+    grid-template-columns: 1fr;
+  }
 }

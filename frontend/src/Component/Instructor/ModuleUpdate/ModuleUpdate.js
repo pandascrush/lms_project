@@ -47,39 +47,42 @@ function ModuleUpdate() {
   };
 
   return (
-    <div className="module-update-container">
+    <>
       <h2 className="module2">Update Module Name</h2>
-      <ToastContainer />
-      <div>
-        <label className="modulelabel">Select Module:</label>
-        <select
-          value={selectedModuleId}
-          onChange={(e) => setSelectedModuleId(e.target.value)}
-          className="selectbox"
-        >
-          <option value="">--Select Module--</option>
-          {modules.map((module) => (
-            <option key={module.moduleid} value={module.moduleid}>
-              {module.modulename}
-            </option>
-          ))}
-        </select>
-      </div>
+      <div className="module-update-container">
+        <ToastContainer />
+        <div>
+          <label className="modulelabel">Select Module:</label>
+          <select
+            value={selectedModuleId}
+            onChange={(e) => setSelectedModuleId(e.target.value)}
+            className="selectbox"
+          >
+            <option value="">--Select Module--</option>
+            {modules.map((module) => (
+              <option key={module.moduleid} value={module.moduleid}>
+                {module.modulename}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div>
-        <label>New Module Name:</label>
-        <input
-          type="text"
-          value={updatedModuleName}
-          onChange={(e) => setUpdatedModuleName(e.target.value)}
-          className="inp1"
-        />
+        <div>
+          <label>New Module Name:</label>
+          <br />
+          <input
+            type="text"
+            value={updatedModuleName}
+            onChange={(e) => setUpdatedModuleName(e.target.value)}
+            className="inp1"
+          />
+        </div>
+        <br />
+        <button onClick={handleUpdateModule} className="updatebtn">
+          Update Module
+        </button>
       </div>
-      <br />
-      <button onClick={handleUpdateModule} className="updatebtn">
-        Update Module
-      </button>
-    </div>
+    </>
   );
 }
 

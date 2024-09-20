@@ -1,11 +1,12 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-
+import "./Module.css";
 function Module() {
   const { id } = useParams();
 
   return (
-    <div className="d-flex p-3 gap-3">
+    <div className="d-flex p-3 gap-3 entpart">
+      
       <Link
         className="btn"
         style={{ backgroundColor: "#001040", color: "white" }}

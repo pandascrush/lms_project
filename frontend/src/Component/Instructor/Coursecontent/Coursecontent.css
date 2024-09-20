@@ -1,24 +1,23 @@
 .file-upload-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    /* padding: 10px; */
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    transition: background-color 0.3s ease;
-  }
-  
-  .file-upload-container:hover {
-    background-color: #e2e6ea;
-  }
-  
-  .file-upload-container label {
-    margin-right: 10px;
-  }
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  /* padding: 10px; */
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
 
+.file-upload-container:hover {
+  background-color: #e2e6ea;
+}
 
- .image-preview {
+.file-upload-container label {
+  margin-right: 10px;
+}
+
+.image-preview {
   margin-top: 20px;
 }
 
@@ -27,11 +26,10 @@
   max-height: 200px; /* Set the desired height */
   object-fit: cover; /* Ensure the image covers the area */
 }
-.bgpurplecard{
-  background-color: rgb(209, 180, 235) !important;
+.bgcards {
+  background-color: #ffe8e8 !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
 }
-a{
+a {
   text-decoration: none !important;
 }
-

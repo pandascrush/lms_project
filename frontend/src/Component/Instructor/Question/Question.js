@@ -146,13 +146,9 @@ const Question = () => {
     formData.append("selectedModuleId", selectedModuleId);
     formData.append("parentModuleId", parentModuleId);
 
-    // Append options array as JSON string
     formData.append("options", JSON.stringify(options));
 
-    //console.log(formData);
-
     try {
-      // Send the formData using axios
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}quiz/addquestion`,
         formData
@@ -200,9 +196,9 @@ const Question = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container ">
       <h3 className="text-center">Quiz</h3>
-      <div className="bgpurplecard p-5 rounded-3">
+      <div className="entirequizpart p-5 rounded-3">
         <h5>Select the module</h5>
         <DropdownTreeSelect
           data={moduleStructure}
@@ -349,7 +345,7 @@ const Question = () => {
 
             {/* Add the "+" button to add new options dynamically */}
             <div className="add-option-btn mt-3">
-              <button className="btn btn-outline-success" onClick={addOption}>
+              <button className="btn btn-outline-danger" onClick={addOption}>
                 <FaPlus /> Add Option
               </button>
             </div>
@@ -413,11 +409,11 @@ const Question = () => {
 
         <div className="d-flex justify-content-center" style={{ gap: "10px" }}>
           <button
-            className="btn btn-sm" // Changed to 'btn-sm' for smaller button
+            className="subbtn" // Changed to 'btn-sm' for smaller button
             style={{
               marginTop: "20px",
               color: "white",
-              backgroundColor: "#001040",
+              backgroundColor: "#802626",
               padding: "8px 16px", // Smaller padding for reduced size
               fontSize: "14px", // Adjusted font size
             }}

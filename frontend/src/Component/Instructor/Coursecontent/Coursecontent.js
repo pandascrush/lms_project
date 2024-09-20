@@ -248,7 +248,12 @@ const Coursecontent = () => {
 
       // Insert video into the editor
       const editor = document.querySelector(".jodit-wysiwyg");
-      const videoEmbed = `<video width="600" controls><source src="${videoUrl}" type="video/mp4">Your browser does not support the video tag.</video>`;
+      const videoEmbed = (
+        <video width="600" controls>
+          <source src="${videoUrl}" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      );
       editor.innerHTML += videoEmbed;
       setContent(editor.innerHTML);
     } catch (error) {
@@ -265,7 +270,7 @@ const Coursecontent = () => {
   };
 
   return (
-    <div className="container-fluid wrapper bgpurplecard py-5">
+    <div className="container  bgcards py-5">
       <Card className="mx-5 shadow-sm border-0 pt-4">
         <CardBody>
           <h3>Page Content</h3>

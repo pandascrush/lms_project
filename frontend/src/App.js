@@ -1,18 +1,14 @@
 import "./App.css";
-import Banner from "./Component/Landingpage/Banner/Banner";
 import Menubar from "./Component/Landingpage/Menubar/Menubar";
 import Login from "./Component/Landingpage/Login/Login";
 import RegisterPage from "./Component/Landingpage/Register/Register";
 import { Footer } from "./Component/Footer/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CourseDetail from "./Component/Admin/Coursedetail/Coursedetail";
-
 import Inprogress from "./Component/Student/Inprogresscourses/Inprogress";
 import Coursecompleted from "./Component/Student/Coursecompleted/Coursecompleted";
 import Coursemenubar from "./Component/Student/Coursemenubar/Coursemenubar";
-// import Coursereading from './Component/Coursereading/Coursereading';
 import Contentmodule from "./Component/Instructor/Contentmodule/Contentmodule";
-
 import Studentattendance from "./Component/Teacher/Studentattendance";
 import Totalchart from "./Component/Teacher/Teacherpiechart/Totalchart";
 import Unapprovedattendance from "./Component/Teacher/Unapproved";
@@ -122,14 +118,14 @@ function App() {
           >
             <Route path="courselist" element={<Courselist />} />
             <Route path="coursecontent" element={<CourseContentPage />} />
-            <Route path="addpagecontent" element={<Coursecontent />} />
-            <Route path="updatepagecontent" element={<CoursecontentUpdate />} />
+            <Route path="addpagecontent" element={[<CourseContentPage/>,<Coursecontent />]} />
+            <Route path="updatepagecontent" element={[<CourseContentPage/>,<CoursecontentUpdate />]} />
             <Route path="coursemodule" element={<Module />} />
-            <Route path="addmodule" element={<Modulepage />} />
-            <Route path="updatemodule" element={<ModuleUpdate />} />
+            <Route path="addmodule" element={[<Module/>,<Modulepage />]} />
+            <Route path="updatemodule" element={[<Module/>,<ModuleUpdate />]} />
             <Route path="quilltxt" element={<QuestionPage />} />
-            <Route path="addquestion" element={<Question />} />
-            <Route path="updatequestion" element={<QuestionUpdate />} />
+            <Route path="addquestion" element={[<QuestionPage/>,<Question />]} />
+            <Route path="updatequestion" element={[<QuestionPage/>,<QuestionUpdate />]} />
             <Route path="questionbank" element={<CategoryQuizList />} />
             <Route path="category" element={<AddCategory />} />
             <Route path="coursecreation" element={<AddCourse />} />

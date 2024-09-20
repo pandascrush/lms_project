@@ -111,14 +111,14 @@ function QuestionUpdate() {
   };
 
   return (
-    <div>
-      <h2>Update Questions</h2>
-
+    <>
+       <h2 className="text-center">Update Questions</h2>
+    <div className=" container entirequizpart p-4 rounded-3">
       {/* Select Box for Modules */}
       <div>
-        <label>Select Module:</label>
+        <label className="py-4"><b>Select Module:</b></label><br/>
         <select value={selectedModuleId} onChange={handleModuleChange}>
-          <option value="">--Select Module--</option>
+          <option value="">Select Module</option>
           {modules.map((module) => (
             <option key={module.moduleid} value={module.moduleid}>
               {module.modulename}
@@ -128,8 +128,8 @@ function QuestionUpdate() {
       </div>
 
       {/* Display Questions */}
-      <div>
-        <h3>Questions for Selected Module:</h3>
+      <div className="py-5">
+        <h5>Questions for Selected Module:</h5>
         {questions.length > 0 ? (
           <ul>
             {questions.map((question) => (
@@ -223,8 +223,9 @@ function QuestionUpdate() {
         )}
       </div>
 
-      <button onClick={handleSubmit}>Update Questions</button>
+      <button onClick={handleSubmit} className="subbtn">Update Questions</button>
     </div>
+    </>
   );
 }
 

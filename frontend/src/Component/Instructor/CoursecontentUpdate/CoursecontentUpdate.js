@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import JoditEditor from "jodit-react";
-
+import "./CoursecontentUpdate.css"
 function CoursecontentUpdate() {
   const [modules, setModules] = useState([]);
   const [selectedModuleId, setSelectedModuleId] = useState("");
@@ -86,12 +86,14 @@ function CoursecontentUpdate() {
   };
 
   return (
-    <div className="course-content-update">
-      <h2>Update Course Content</h2>
+    <>
+          <h2 className="text-center py-4">Update Course Content</h2>
+    <div className="container coursecontentupdate p-4 rounded-3">
+
       <div>
-        <label>Select Module:</label>
+        <label className="py-1">Select Module:</label><br/>
         <select value={selectedModuleId} onChange={handleModuleChange}>
-          <option value="">--Select Module--</option>
+          <option value="">Select Module</option>
           {modules.map((module) => (
             <option key={module.moduleid} value={module.moduleid}>
               {module.modulename}
@@ -100,7 +102,7 @@ function CoursecontentUpdate() {
         </select>
       </div>
 
-      <div>
+      <div className="py-4">
         <h3>Module Content:</h3>
         {moduleContent.length > 0 ? (
           <ul>
@@ -120,8 +122,9 @@ function CoursecontentUpdate() {
         )}
       </div>
 
-      <button onClick={handleUpdateContent}>Update Content</button>
+      <button onClick={handleUpdateContent} className="subbtn">Update Content</button>
     </div>
+    </>
   );
 }
 

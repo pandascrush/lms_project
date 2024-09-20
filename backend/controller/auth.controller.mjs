@@ -72,8 +72,8 @@ export const registerUser = (req, res) => {
 
                 // Insert into Auth table
                 db.query(
-                  "INSERT INTO auth (email, password, user_id) VALUES (?, ?, ?)",
-                  [email, hashedPassword, userId],
+                  "INSERT INTO auth (email, password, user_id,role_id) VALUES (?, ?, ?,?)",
+                  [email, hashedPassword, userId,4],
                   (err) => {
                     if (err) {
                       console.error(err);

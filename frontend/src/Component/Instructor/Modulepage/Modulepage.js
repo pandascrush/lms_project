@@ -19,7 +19,7 @@ function Modulepage() {
   const [selectedModuleId, setSelectedModuleId] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const {id} = useParams()
+  const { id } = useParams();
 
   useEffect(() => {
     axios
@@ -225,7 +225,7 @@ function Modulepage() {
     console.log(formData);
 
     axios
-      .post(`${process.env.REACT_APP_API_URL}course/addmodule`, formData, {
+      .post(`${process.env.REACT_APP_API_URL}course/addmodule, formData`, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -254,60 +254,59 @@ function Modulepage() {
   };
 
   return (
-    <div className="container-fluid modpart">
-      <h3 className="violettext">Welcome to Course Module</h3>
-      <h6>Select the Course</h6>
-      <DropdownTreeSelect
-        data={courses}
-        onChange={handleChange}
-        className="bootstrap-demo"
-        texts={{ placeholder: "Select..." }}
-        value={selectedNode ? [selectedNode] : []}
-      />
-      <ToastContainer />
-      <div className="col-md-6">
-        <h4 className="violettext my-2">Add New Module</h4>
-        <form onSubmit={handleSubmit}>
-          {textareas.map((textarea, index) => (
-            <div key={index} className="my-2">
-              <textarea
-                rows="3"
-                value={textarea}
-                onChange={(e) => handleTextareaChange(index, e.target.value)}
+    <>
+      <h3 className="violettext text-center my-2">Welcome to Course Module</h3>
+      <div className="container modpart p-3 rounded-2">
+        <h6>Select the Course</h6>
+        <DropdownTreeSelect
+          data={courses}
+          onChange={handleChange}
+          className="bootstrap-demo"
+          texts={{ placeholder: "Select..." }}
+          value={selectedNode ? [selectedNode] : []}
+        />
+        <ToastContainer />
+        <div className="col-md-6">
+          <h4 className="violettext my-2">Add New Module</h4>
+          <form onSubmit={handleSubmit}>
+            {textareas.map((textarea, index) => (
+              <div key={index} className="my-2">
+                <textarea
+                  rows="3"
+                  value={textarea}
+                  onChange={(e) => handleTextareaChange(index, e.target.value)}
+                  className="form-control"
+                  placeholder={`Enter Module Name ${index + 1}`}
+                />
+                {index === textareas.length - 1 && (
+                  <button
+                    type="button"
+                    className="subbtn mt-2 btn-sm"
+                    onClick={addTextarea}
+                  >
+                    Add Another Module
+                  </button>
+                )}
+              </div>
+            ))}
+            <div className="my-2">
+              <label htmlFor="moduleImage" className="form-label violettext">
+                Module Image (optional)
+              </label>
+              <input
+                type="file"
                 className="form-control"
-                placeholder={`Enter Module Name ${index + 1}`}
+                id="moduleImage"
+                onChange={handleFileChange}
               />
-              {index === textareas.length - 1 && (
-                <button
-                  type="button"
-                  className="btn btn-secondary mt-2 btn-sm"
-                  onClick={addTextarea}
-                >
-                  Add Another Module
-                </button>
-
-                
-              )}
-             
             </div>
-          ))}
-          <div className="my-2">
-            <label htmlFor="moduleImage" className="form-label violettext">
-              Module Image (optional)
-            </label>
-            <input
-              type="file"
-              className="form-control"
-              id="moduleImage"
-              onChange={handleFileChange}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary my-2">
-            Submit
-          </button>
-        </form>
+            <button type="submit" className="subbtn my-2">
+              Submit
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

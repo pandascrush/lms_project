@@ -1,5 +1,5 @@
 .sidebar {
-    background-color: #841ECC;
+    background-color: #802626;
     color: white;
     height: 100vh;
     position: fixed;
@@ -13,7 +13,7 @@
   }
   
   .sidebar .toggle-btn {
-    background-color: #841ECC;
+    background-color: #802626;
     width: 100%;
     text-align: start;
     padding: 10px;
@@ -36,7 +36,7 @@
   }
   
   .sidebar ul li:hover {
-    background-color: #841ECC;
+    background-color: #802626;
   }
   
   .sidebar ul li .fa-icon {
