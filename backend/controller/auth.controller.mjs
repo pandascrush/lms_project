@@ -73,7 +73,7 @@ export const registerUser = (req, res) => {
                 // Insert into Auth table
                 db.query(
                   "INSERT INTO auth (email, password, user_id,role_id) VALUES (?, ?, ?,?)",
-                  [email, hashedPassword, userId,4],
+                  [email, hashedPassword, userId, 4],
                   (err) => {
                     if (err) {
                       console.error(err);
@@ -223,7 +223,7 @@ export const login = (req, res) => {
       }
 
       // Create a JWT token
-      const token = jwt.sign({ id: user.id }, jwtSecret, {
+      const token = jwt.sign({ id: user.user_id }, jwtSecret, {
         expiresIn: "1h", // Token expires in 1 hour
       });
 
@@ -231,8 +231,22 @@ export const login = (req, res) => {
       res.cookie("authToken", token, {
         httpOnly: true, // Prevent JavaScript from accessing the cookie
         maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
-        path: "/",        // Make the cookie available across the whole site
+        path: "/", // Make the cookie available across the whole site
       });
+
+      // Log the login event in the standardlog table
+      const logEvent = "login";
+      const logAction = "logged";
+
+      db.query(
+        "INSERT INTO standardlog (user_id, eventname, action) VALUES (?, ?, ?)",
+        [user.user_id, logEvent, logAction],
+        (logErr, logResult) => {
+          if (logErr) {
+            console.error("Error logging event: ", logErr);
+          }
+        }
+      );
 
       // Send response along with the token and user data
       res.json({ message: "login success", token, user });
@@ -241,15 +255,45 @@ export const login = (req, res) => {
 };
 
 export const logout = (req, res) => {
-  // Clear the authentication token from the cookies
-  res.clearCookie("authToken", {
-    httpOnly: true,  // Ensure JavaScript cannot access the cookie
-    path: "/",       // Clear cookie across the entire domain
-    maxAge: 0,       // Immediately expire the cookie
-  });
+  // Extract the token from the cookie
+  const token = req.cookies.authToken;
 
-  // Send a response confirming the logout
-  res.json({ message: "Logged out successfully" });
+  if (!token) {
+    return res.json({ message: "No authentication token found" });
+  }
+
+  // Verify the token to extract user details
+  jwt.verify(token, jwtSecret, (err, decoded) => {
+    if (err) {
+      return res.json({ message: "Invalid token" });
+    }
+
+    const user_id = decoded.id; // Extract user_id from the decoded token
+
+    // Log the logout event in the standardlog table
+    const logEvent = "logout";
+    const logAction = "logged out";
+
+    db.query(
+      "INSERT INTO standardlog (user_id, eventname, action) VALUES (?, ?, ?)",
+      [user_id, logEvent, logAction],
+      (logErr, logResult) => {
+        if (logErr) {
+          console.error("Error logging event: ", logErr);
+        }
+
+        // Clear the authentication token from the cookies
+        res.clearCookie("authToken", {
+          httpOnly: true, // Ensure JavaScript cannot access the cookie
+          path: "/", // Clear cookie across the entire domain
+          maxAge: 0, // Immediately expire the cookie
+        });
+
+        // Send a response confirming the logout
+        res.json({ message: "Logged out successfully" });
+      }
+    );
+  });
 };
 
 export const checkToken = (req, res) => {

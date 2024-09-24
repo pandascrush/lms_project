@@ -200,22 +200,23 @@ const Coursecontent = () => {
     axios
       .post(`${process.env.REACT_APP_API_URL}course/submitcon`, formData)
       .then((response) => {
-        if (response.data.message === "Content submitted successfully") {
+        if (response.data.message === "Content submitted and updated successfully") {
           alert("Content submitted successfully");
-          navigate("/instructordashboard/displaycontent", {
-            state: {
-              ...selectedCourseDetails,
-              moduleId: selectedModule,
-              description,
-              content: post.content,
-              availableFrom,
-              availableUntil,
-              completionCriteria,
-              groupMode,
-              restrictionAccess,
-              videoDuration, // Pass video duration to the next page
-            },
-          });
+          window.location.reload()
+          // navigate(`/instructordashboard/${id}/addpagecontent`, {
+          //   state: {
+          //     ...selectedCourseDetails,
+          //     moduleId: selectedModule,
+          //     description,
+          //     content: post.content,
+          //     availableFrom,
+          //     availableUntil,
+          //     completionCriteria,
+          //     groupMode,
+          //     restrictionAccess,
+          //     videoDuration, // Pass video duration to the next page
+          //   },
+          // });
         } else if (response.data.error) {
           alert(response.data.error || "Failed to submit content");
         }
@@ -366,7 +367,7 @@ const Coursecontent = () => {
               />
             </div>
 
-            <div className="my-3">
+            {/* <div className="my-3">
               <Label for="completionCriteria">Completion Criteria</Label>
               <Input
                 type="text"
@@ -375,9 +376,9 @@ const Coursecontent = () => {
                 onChange={(e) => setCompletionCriteria(e.target.value)}
                 className="rounded-0"
               />
-            </div>
+            </div> */}
 
-            <div className="my-3">
+            {/* <div className="my-3">
               <Label for="groupMode">Group Mode</Label>
               <Input
                 type="select"
@@ -391,9 +392,9 @@ const Coursecontent = () => {
                 <option value="1">Separate groups</option>
                 <option value="2">Visible groups</option>
               </Input>
-            </div>
+            </div> */}
 
-            <div className="my-3">
+            {/* <div className="my-3">
               <Label for="restrictionAccess">Restriction Access</Label>
               <Input
                 type="select"
@@ -408,7 +409,7 @@ const Coursecontent = () => {
                 <option value="2">Restrict access by grade</option>
                 <option value="3">Restrict access by user profile</option>
               </Input>
-            </div>
+            </div> */}
 
             <div className="my-3 d-flex ">
               <Button

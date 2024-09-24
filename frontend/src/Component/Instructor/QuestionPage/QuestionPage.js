@@ -5,7 +5,7 @@ function QuestionPage() {
   const { id } = useParams();
 
   return (
-    <div className="d-flex p-3 gap-3">
+    <div className="d-flex justify-content-between p-3 gap-3 modpart">
       <Link
         className="btn"
         style={{ backgroundColor: "#001040", color: "white" }}

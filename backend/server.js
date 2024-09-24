@@ -7,6 +7,7 @@ import authRoute from "./routes/auth.routes.mjs";
 import categoryRoute from "./routes/Course/category.routes.mjs";
 import courseRoute from "./routes/Course/course.routes.mjs";
 import quizRouter from "./routes/Course/quiz.routes.mjs";
+import userRouter from './routes/User/user.routes.mjs'
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use("/auth", authRoute);
 app.use("/category", categoryRoute);
 app.use("/course", courseRoute);
 app.use("/quiz", quizRouter);
+app.use('/user',userRouter)
 app.use("/uploads", express.static("uploads"));
 
 //richtext
@@ -42,8 +44,8 @@ app.get("/content", (req, res) => {
   res.send({ content: richTextContent });
 });
 
-// Test route
-app.get("/test", (req, res) => {
+// Test rout
+app.get("/api/test", (req, res) => {
   res.json({ msg: "hello world" });
 });
 

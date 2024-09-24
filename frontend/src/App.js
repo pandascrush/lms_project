@@ -55,6 +55,8 @@ import QuestionUpdate from "./Component/Instructor/QuestionUpdate/QuestionUpdate
 import Module from "./Component/Instructor/Module/Module";
 import CourseContentPage from "./Component/Instructor/CourseContentPage/CourseContentPage";
 import QuestionPage from "./Component/Instructor/QuestionPage/QuestionPage";
+import { Indiviualmenu } from "./Component/User/UserProfile/UserProfile";
+import UpdateCourse from "./Component/Instructor/UpdateCourse/UpdateCourse";
 
 // import RichTextEditor from './Component/Instructor/Richtexteditor/Richtexteditor';
 
@@ -118,17 +120,33 @@ function App() {
           >
             <Route path="courselist" element={<Courselist />} />
             <Route path="coursecontent" element={<CourseContentPage />} />
-            <Route path="addpagecontent" element={[<CourseContentPage/>,<Coursecontent />]} />
-            <Route path="updatepagecontent" element={[<CourseContentPage/>,<CoursecontentUpdate />]} />
+            <Route
+              path="addpagecontent"
+              element={[<CourseContentPage />, <Coursecontent />]}
+            />
+            <Route
+              path="updatepagecontent"
+              element={[<CourseContentPage />, <CoursecontentUpdate />]}
+            />
             <Route path="coursemodule" element={<Module />} />
-            <Route path="addmodule" element={[<Module/>,<Modulepage />]} />
-            <Route path="updatemodule" element={[<Module/>,<ModuleUpdate />]} />
+            <Route path="addmodule" element={[<Module />, <Modulepage />]} />
+            <Route
+              path="updatemodule"
+              element={[<Module />, <ModuleUpdate />]}
+            />
             <Route path="quilltxt" element={<QuestionPage />} />
-            <Route path="addquestion" element={[<QuestionPage/>,<Question />]} />
-            <Route path="updatequestion" element={[<QuestionPage/>,<QuestionUpdate />]} />
+            <Route
+              path="addquestion"
+              element={[<QuestionPage />, <Question />]}
+            />
+            <Route
+              path="updatequestion"
+              element={[<QuestionPage />, <QuestionUpdate />]}
+            />
             <Route path="questionbank" element={<CategoryQuizList />} />
             <Route path="category" element={<AddCategory />} />
             <Route path="coursecreation" element={<AddCourse />} />
+            <Route path="coursecreation/:course" element={<UpdateCourse/>} />
           </Route>
           <Route path="/instructorsidebar" element={<Sidebarinstructor />} />
           <Route
@@ -169,6 +187,8 @@ function App() {
             path="/ken/:course/:module/undefined"
             element={[<Drmenubar />, <CourseVideos />]}
           />
+          {/* User Route */}
+          <Route path="/user/:id/profile" element={[<Indiviualmenu/>]} />
         </Routes>
       </BrowserRouter>
     </div>

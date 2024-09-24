@@ -177,7 +177,7 @@ export const createQuiz = (req, res) => {
 
   // Ensure the required data is received
   if (!courseId || !categoryId || !sequence || !quizTypeId) {
-    return res.status(400).json({ message: "Invalid data received." });
+    return res.json({ message: "Invalid data received." });
   }
 
   // Start with inserting into the quiz table
@@ -211,7 +211,7 @@ export const createQuiz = (req, res) => {
   db.query(quizQuery, quizParams, (err, quizResult) => {
     if (err) {
       console.error("Error executing quiz query:", err);
-      return res.status(500).json({ message: "Error saving quiz." });
+      return res.json({ message: "Error saving quiz." });
     }
 
     const quizId = quizResult.insertId; // Get the newly inserted quiz ID
@@ -224,12 +224,11 @@ export const createQuiz = (req, res) => {
       if (err) {
         console.error("Error fetching course category:", err);
         return res
-          .status(500)
           .json({ message: "Error fetching course category." });
       }
 
       if (courseResult.length === 0) {
-        return res.status(404).json({ message: "Course not found." });
+        return res.json({ message: "Course not found." });
       }
 
       const courseCategoryId = courseResult[0].course_category_id;
@@ -245,7 +244,7 @@ export const createQuiz = (req, res) => {
         (err, contextResults) => {
           if (err) {
             console.error("Error checking context:", err);
-            return res.status(500).json({ message: "Error checking context." });
+            return res.json({ message: "Error checking context." });
           }
 
           let depth = 1; // Default depth
@@ -267,7 +266,6 @@ export const createQuiz = (req, res) => {
               if (err) {
                 console.error("Error inserting context:", err);
                 return res
-                  .status(500)
                   .json({ message: "Error inserting context." });
               }
 
@@ -281,12 +279,11 @@ export const createQuiz = (req, res) => {
                 if (err) {
                   console.error("Error updating quiz with context_id:", err);
                   return res
-                    .status(500)
                     .json({ message: "Error updating quiz with context ID." });
                 }
 
                 // Return success response
-                res.status(200).json({
+                res.json({
                   message: "Quiz and context created successfully.",
                   quizId,
                   contextId,

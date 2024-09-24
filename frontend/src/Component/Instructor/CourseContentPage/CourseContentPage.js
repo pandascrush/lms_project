@@ -5,7 +5,7 @@ function CourseContentPage() {
   const { id } = useParams();
 
   return (
-    <div className="d-flex justify-content-between bg-light p-3 gap-3">
+    <div className="d-flex justify-content-between modpart p-3 gap-3">
       <Link
         className="btn"
         style={{ backgroundColor: "#001040", color: "white" }}

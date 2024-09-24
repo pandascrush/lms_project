@@ -31,3 +31,47 @@ font-weight: 600;
         padding: 0px 100px;
     }
 }
+
+.unique-story-container {
+    padding: 20px;
+  }
+  
+  .unique-story-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .unique-left-btn,
+  .unique-right-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #001040;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .unique-left-btn.active,
+  .unique-right-btn.active {
+    background-color: #dc3545;
+  }
+  
+  .unique-story-content {
+    margin-top: 20px;
+  }
+  
+  .unique-story-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  .unique-story-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .unique-story-text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  

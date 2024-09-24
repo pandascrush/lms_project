@@ -115,3 +115,16 @@
     width: 100%;
   }
 }
+.custom-dropdown-menu {
+  color: #001040 !important; /* Override default color */
+}
+
+.custom-dropdown-item {
+  color: #001040 !important; /* Set text color for dropdown items */
+}
+
+.custom-dropdown-item:hover {
+  background-color: rgba(0, 16, 64, 0.1); /* Optional: change background on hover */
+  color: #001040 !important; /* Ensure text color stays the same on hover */
+}
+

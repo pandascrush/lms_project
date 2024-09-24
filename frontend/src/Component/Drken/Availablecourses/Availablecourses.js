@@ -1,12 +1,15 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Availablecourses.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import coursecontent1 from "../../../Asset/who suffers.png";
 import coursecontent2 from "../../../Asset/Coursecontent2.jpg";
+
 function Availablecourses() {
   const now = 60;
+
+  const { id } = useParams();
   return (
     <div className="container bgfullpath mb-5">
       <div className="container card mt-3 bgpurplecard border-0">
@@ -44,7 +47,7 @@ function Availablecourses() {
                 />
                 <div className="my-4">
                   <Link
-                    to="/"
+                    to={`/user/${id}`}
                     className="coursebutton text-decoration-none p-3 rounded-3"
                   >
                     Go to course

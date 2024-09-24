@@ -278,7 +278,7 @@ function Modulepage() {
                   className="form-control"
                   placeholder={`Enter Module Name ${index + 1}`}
                 />
-                {index === textareas.length - 1 && (
+                {/* {index === textareas.length - 1 && (
                   <button
                     type="button"
                     className="subbtn mt-2 btn-sm"
@@ -286,12 +286,12 @@ function Modulepage() {
                   >
                     Add Another Module
                   </button>
-                )}
+                )} */}
               </div>
             ))}
             <div className="my-2">
               <label htmlFor="moduleImage" className="form-label violettext">
-                Module Image (optional)
+                Module Image 
               </label>
               <input
                 type="file"

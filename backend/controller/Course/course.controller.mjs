@@ -86,9 +86,10 @@ export const addCourse = (req, res) => {
   }
 };
 
-export const getAllCourses= (req, res) => {
+export const getAllCourses = (req, res) => {
   const query = `
     SELECT 
+      c.courseid,
       c.course_desc,
       c.coursename, 
       c.course_image, 
@@ -114,7 +115,9 @@ export const getAllCourses= (req, res) => {
       return res.status(404).json({ message: "No courses found" });
     }
 
-    const courses = results.map(course => ({
+    const courses = results.map((course) => ({
+      courseid: course.courseid,
+      coursedesc: course.coursedesc,
       coursename: course.coursename,
       course_image: `${process.env.URL}${course.course_image}`,
       course_start_date: course.course_start_date,
@@ -127,6 +130,68 @@ export const getAllCourses= (req, res) => {
   });
 };
 
+export const getSingleCourse = (req, res) => {
+  const { id } = req.params;
+
+  const sql = `select * from courses where courseid = ?`;
+  db.query(sql, id, (err, result) => {
+    if (err) {
+      res.json({ err: err });
+    } else {
+      res.json({ result: result });
+    }
+  });
+};
+
+export const updateCourseById = (req, res) => {
+  const courseId = req.params.courseId;
+  const {
+    courseFullName,
+    courseShortName,
+    courseStartDate,
+    courseEndDate,
+    courseDescription,
+    courseCategoryId,
+  } = req.body;
+
+  // Set image path based on file upload
+  const imagePath = req.file
+    ? path.join("/uploads", req.file.filename) // Store the image path in the desired format
+    : "default_image.jpg"; // Use default image if no file is uploaded
+
+  const query = `
+    UPDATE courses 
+    SET 
+      coursename = ?, 
+      course_short_name = ?, 
+      course_start_date = ?, 
+      course_end_date = ?, 
+      course_desc = ?, 
+      course_category_id = ?,
+      course_image = ?
+    WHERE courseid = ?
+  `;
+
+  const values = [
+    courseFullName,
+    courseShortName,
+    courseStartDate,
+    courseEndDate,
+    courseDescription,
+    courseCategoryId,
+    imagePath,
+    courseId,
+  ];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      console.error("Error updating course:", error);
+      return res.status(500).json({ message: "Error updating course" });
+    }
+
+    return res.json({ message: "Course updated successfully" });
+  });
+};
 
 // Module Section
 export const addModule = (req, res) => {
@@ -380,7 +445,7 @@ export const getModuleByCourseId = async (req, res) => {
 
 export const getModulesByCourseId = (req, res) => {
   const { courseId } = req.params; // Assuming courseId is passed as a route parameter
-  const baseUrl = "http://localhost:5000"; // Base URL for images
+  const baseUrl = `${process.env.URL}`; // Base URL for images
 
   // Query to get module details, count of quizzes, and count of videos based on courseId
   const query = `
@@ -570,7 +635,7 @@ export const submitCourseContent = (req, res) => {
                 });
               }
 
-              res.status(200).json({
+              res.json({
                 message: "Content submitted and updated successfully",
                 pageId,
                 contextId,

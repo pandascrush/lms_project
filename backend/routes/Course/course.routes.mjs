@@ -11,8 +11,10 @@ import {
   getModulePageContent,
   getModulesByCourseId,
   getOtherModules,
+  getSingleCourse,
   getStructuredData,
   submitCourseContent,
+  updateCourseById,
   updateModule,
   updatePageContent,
 } from "../../controller/Course/course.controller.mjs";
@@ -21,9 +23,12 @@ const router = express.Router();
 router.post("/addcourse", upload.single("courseImage"), addCourse);
 router.post("/addmodule", upload.single("moduleImage"), addModule);
 
-// Module Section
+
 router.get("/getcourse", getCourse);
 router.get('/getallcourse',getAllCourses)
+router.put('/updatecourse/:courseId', upload.single('courseImage'),updateCourseById)
+router.get('/getcourse/:id',getSingleCourse)
+// Module Section
 router.get("/getmodule", getModule);
 router.put("/updatemodule", updateModule); // update the module name
 router.get("/getmodulepagecontent/:moduleid", getModulePageContent);

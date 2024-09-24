@@ -225,7 +225,7 @@ const Question = () => {
               <option value="true/false">True/False</option>
             </select>
           </div>
-          <div className="mx-2">
+          {/* <div className="mx-2">
             <div
               style={{ display: "flex", alignItems: "center" }}
               className="border border-2"
@@ -250,7 +250,7 @@ const Question = () => {
                 <span className="fw-bold">Upload File</span>
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <JoditEditor

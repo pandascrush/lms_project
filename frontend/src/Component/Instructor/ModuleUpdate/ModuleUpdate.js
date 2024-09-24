@@ -10,23 +10,26 @@ function ModuleUpdate() {
   const [updatedModuleName, setUpdatedModuleName] = useState("");
 
   useEffect(() => {
+    // Fetch the list of modules from the backend and log the result
     axios
       .get(`${process.env.REACT_APP_API_URL}course/getmodule`)
       .then((res) => {
-        setModules(res.data.result);
+        setModules(res.data.result); // Store fetched modules in state
+        console.log("Modules fetched from API:", res.data.result); // Debug log to ensure modules are received
+      })
+      .catch((err) => {
+        console.error("Error fetching modules:", err);
       });
   }, []);
 
   const handleUpdateModule = () => {
+    // Ensure a module is selected and a new name is provided
     if (!selectedModuleId || !updatedModuleName) {
-      toast.error("Please select a module");
+      toast.error("Please select a module and enter a new name.");
       return;
     }
 
-    // Log the selected module and new name for debugging
-    console.log(selectedModuleId, updatedModuleName);
-
-    // Call the backend to update the module name
+    // Send the updated module name to the backend
     axios
       .put(`${process.env.REACT_APP_API_URL}course/updatemodule`, {
         moduleid: selectedModuleId,
@@ -36,14 +39,34 @@ function ModuleUpdate() {
         if (res.data.message === "Module updated successfully") {
           toast.success("Module updated successfully!");
           setUpdatedModuleName(""); // Clear the input field
-        } else if (res.data.message === "Failed to update module") {
+          setSelectedModuleId(""); // Clear the dropdown
+        } else {
           toast.error("Failed to update module");
         }
       })
       .catch((err) => {
         console.error("Error updating module:", err);
-        alert("Failed to update module.");
+        toast.error("Failed to update module.");
       });
+  };
+
+  // Handle dropdown change and set the module name in the input box
+  const handleModuleSelection = (e) => {
+    const selectedId = e.target.value;
+    setSelectedModuleId(selectedId);
+
+    // Log the selected module ID for debugging
+    console.log("Selected Module ID:", selectedId);
+
+    // Find the selected module by its id and set its name into the input box
+    const selectedModule = modules.find((module) => module.moduleid == selectedId); // Use == for string/number comparisons
+    if (selectedModule) {
+      setUpdatedModuleName(selectedModule.modulename); // Display selected module name in the input
+      console.log("Selected module:", selectedModule); // Debug log the module object
+    } else {
+      setUpdatedModuleName(""); // Clear the input if no module is selected
+      console.log("No matching module found."); // Log if no module was found
+    }
   };
 
   return (
@@ -55,7 +78,7 @@ function ModuleUpdate() {
           <label className="modulelabel">Select Module:</label>
           <select
             value={selectedModuleId}
-            onChange={(e) => setSelectedModuleId(e.target.value)}
+            onChange={handleModuleSelection}
             className="selectbox"
           >
             <option value="">--Select Module--</option>
@@ -73,7 +96,7 @@ function ModuleUpdate() {
           <input
             type="text"
             value={updatedModuleName}
-            onChange={(e) => setUpdatedModuleName(e.target.value)}
+            onChange={(e) => setUpdatedModuleName(e.target.value)} // Allow editing the input value
             className="inp1"
           />
         </div>

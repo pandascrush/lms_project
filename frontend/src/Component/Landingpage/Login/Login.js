@@ -100,7 +100,7 @@ function Login() {
   };
 
   return (
-    <div className="LoginApp">
+    <div className="LoginApp" style={{backgroundColor:"#f0f0f0"}}>
       <ToastContainer />
       <div className="px-1">
         <div className="login-form">

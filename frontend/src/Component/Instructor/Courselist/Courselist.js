@@ -1,13 +1,16 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import "./Courselist.css"; // Ensure you have the CSS styles
+import { useNavigate, useParams } from "react-router-dom"; // Import useNavigate and useParams
+import "./Courselist.css";
 
 function Courselist() {
   const [course, setCourse] = useState([]);
+  const navigate = useNavigate(); // Use the useNavigate hook
+  const { id } = useParams(); // Use useParams to get the `id` from the URL
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/course/getallcourse`)
+      .get(`${process.env.REACT_APP_API_URL}course/getallcourse`)
       .then((res) => {
         console.log(res.data);
         setCourse(res.data);
@@ -17,6 +20,12 @@ function Courselist() {
       });
   }, []);
 
+  // Function to handle card click and navigate to the desired page with courseId
+  const handleCardClick = (courseId) => {
+    // Navigate to the page including both `id` and `courseId`
+    navigate(`/instructordashboard/${id}/coursecreation/${courseId}`);
+  };
+
   return (
     <div className="courselist-container">
       <h3 className="heading-center">Course Overview</h3>
@@ -24,7 +33,11 @@ function Courselist() {
         {course.map((e, index) => (
           <div className="course-card" key={index}>
             {/* First Inner Card: Course Image and Title */}
-            <div className="inner-card course-image-card">
+            <div
+              className="inner-card course-image-card"
+              onClick={() => handleCardClick(e.courseid)} // Pass courseId on click
+              style={{ cursor: "pointer" }} // Change cursor to pointer for clickability
+            >
               <img
                 src={e.course_image.replace(/\\/g, "/")}
                 alt={e.coursename}

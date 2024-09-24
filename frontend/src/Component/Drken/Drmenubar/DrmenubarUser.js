@@ -153,11 +153,20 @@ function DrmenubarUser() {
                 <img src={loginimg} alt="Profile" className="imglogin" />
               </Dropdown.Toggle>
 
-              <Dropdown.Menu className="dropdown-menu-end">
-                <Dropdown.Item as={NavLink} to="/profile">
+              <Dropdown.Menu className="dropdown-menu-end custom-dropdown-menu">
+                <Dropdown.Item
+                  as={NavLink}
+                  to={`/user/${id}/profile`}
+                  className="custom-dropdown-item"
+                >
                   Profile
                 </Dropdown.Item>
-                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={handleLogout}
+                  className="custom-dropdown-item"
+                >
+                  Logout
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Nav>

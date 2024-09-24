@@ -155,8 +155,10 @@ function CourseVideos() {
   };
 
   const handleSubmitPreAssessment = () => {
-    const userId = id === "undefined" ? 0 : id;
+    const userId = id === undefined || id === "undefined" ? 0 : id;
     // console.log(typeof userId);
+    console.log(id);
+    console.log(userId);
 
     const result = Object.keys(selectedOptions)
       .map((questionIndex) => {
@@ -202,7 +204,7 @@ function CourseVideos() {
   };
 
   const handleSubmitPostAssessment = () => {
-    const userId = id === "undefined" ? 0 : id;
+    const userId = id === undefined || id === "undefined" ? 0 : id;
 
     const result = Object.keys(selectedOptions)
       .map((questionIndex) => {
@@ -346,32 +348,58 @@ function CourseVideos() {
               }`}
             >
               <p className="my-4 sidetext p-2">
-                <b style={{ color: "#001040" }}>{moduleName || "Module"}</b>
+                <b style={{ color: "#001040", fontSize: "11px" }}>
+                  {moduleName && moduleName.length > 10 ? (
+                    <>
+                      {moduleName.slice(0, 10)} <br /> {moduleName.slice(10)}
+                    </>
+                  ) : (
+                    moduleName || "Module"
+                  )}
+                </b>
               </p>
-              {sidebarItems.map((item, index) => (
-                <div
-                  style={{ color: "001040" }}
-                  key={index}
-                  className="card text-dark my-2 p-2 border-0 sideshadow"
-                >
-                  <Link
-                    to="#"
-                    className="sidebartext"
-                    onClick={() =>
-                      item.quiz_type_name
-                        ? handleContentChange("quiz", item.questions)
-                        : handleContentChange("video", [])
-                    }
+              {sidebarItems.map((item, index) => {
+                const title = item.quiz_type_name || item.activity_name;
+
+                // Limit title to 15 characters and break into two lines if necessary
+                const formattedTitle =
+                  title.length > 9 ? (
+                    <>
+                      {title.slice(0, 9)} <br /> {title.slice(9)}
+                    </>
+                  ) : (
+                    title
+                  );
+
+                return (
+                  <div
+                    style={{ color: "#001040" }}
+                    key={index}
+                    className="card text-dark my-2 p-2 border-0 sideshadow"
                   >
-                    <img
-                      src={item.quiz_type_name ? sideicon1 : sideicon2}
-                      className="mx-1 text-dark"
-                      alt={item.quiz_type_name || item.activity_name}
-                    />
-                    {item.quiz_type_name || item.activity_name}
-                  </Link>
-                </div>
-              ))}
+                    <Link
+                      style={{
+                        fontSize: "10px",
+                        fontWeight: "bold",
+                      }}
+                      to="#"
+                      className="sidebartext"
+                      onClick={() =>
+                        item.quiz_type_name
+                          ? handleContentChange("quiz", item.questions)
+                          : handleContentChange("video", [])
+                      }
+                    >
+                      <img
+                        src={item.quiz_type_name ? sideicon1 : sideicon2}
+                        className="mx-1 text-dark"
+                        alt={title}
+                      />
+                      {formattedTitle}
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -805,13 +833,16 @@ function CourseVideos() {
                 padding: "10px",
               }}
               onClick={() => {
-                if (id === "undefined") {
+                console.log(id);
+
+                // Corrected condition
+                if (id === "undefined" || id === undefined) {
                   handleClose(); // Close the modal
-                  navigate(`/`); // Change the route
+                  navigate(`/`); // Change the route to the default path
                   window.location.reload(); // Force a reload to fetch new content
-                } else if (id !== "undefined") {
+                } else {
                   handleClose(); // Close the modal
-                  navigate(`/ken/${course}/${parseInt(module) + 1}/${id}`); // Change the route
+                  navigate(`/ken/${course}/${parseInt(module) + 1}/${id}`); // Change the route with ID
                   window.location.reload(); // Force a reload to fetch new content
                 }
               }}
