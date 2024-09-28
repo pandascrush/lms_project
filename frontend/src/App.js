@@ -57,6 +57,11 @@ import CourseContentPage from "./Component/Instructor/CourseContentPage/CourseCo
 import QuestionPage from "./Component/Instructor/QuestionPage/QuestionPage";
 import { Indiviualmenu } from "./Component/User/UserProfile/UserProfile";
 import UpdateCourse from "./Component/Instructor/UpdateCourse/UpdateCourse";
+import DashBoardProfile, {
+  DashBoardMessage,
+  DashBoardPayment,
+} from "./Component/User/Dash/Dash";
+import { Edit } from "./Component/User/Profile/Edit";
 
 // import RichTextEditor from './Component/Instructor/Richtexteditor/Richtexteditor';
 
@@ -146,7 +151,7 @@ function App() {
             <Route path="questionbank" element={<CategoryQuizList />} />
             <Route path="category" element={<AddCategory />} />
             <Route path="coursecreation" element={<AddCourse />} />
-            <Route path="coursecreation/:course" element={<UpdateCourse/>} />
+            <Route path="coursecreation/:course" element={<UpdateCourse />} />
           </Route>
           <Route path="/instructorsidebar" element={<Sidebarinstructor />} />
           <Route
@@ -188,7 +193,10 @@ function App() {
             element={[<Drmenubar />, <CourseVideos />]}
           />
           {/* User Route */}
-          <Route path="/user/:id/profile" element={[<Indiviualmenu/>]} />
+          <Route path="/user/:id/profile" element={[<DrmenubarUser/>,<DashBoardProfile />]} />
+          <Route path="/user/:id/message" element={<DashBoardMessage />} />
+          <Route path="/user/:id/payment" element={<DashBoardPayment />} />
+          <Route path="/user/:id/editprofile" element={<Edit />} />
         </Routes>
       </BrowserRouter>
     </div>

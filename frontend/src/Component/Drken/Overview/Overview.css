@@ -54,7 +54,9 @@ font-weight: 600;
   
   .unique-left-btn.active,
   .unique-right-btn.active {
-    background-color: #dc3545;
+  
+    box-shadow: 1px 1px 1px 3px #d8d6d6;
+    border:0px;
   }
   
   .unique-story-content {

@@ -12,8 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import DOMPurify from "dompurify";
-import Score from "./Score";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is included
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 
@@ -43,6 +42,21 @@ function CourseVideos() {
   const now = (answeredQuestions.size / questions.length) * 100;
   const [showScoreCard, setShowScoreCard] = useState(false);
   const [attempts, setAttempts] = useState([]); // State to store all attempts
+
+  const [haspaid, setHasPaid] = useState();
+
+  useEffect(() => {
+    // Fetch payment status
+    axios
+      .get(`${process.env.REACT_APP_API_URL}user/paymentstatus/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        setHasPaid(res.data.hasPaid); // Set the payment status
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
 
   useEffect(() => {
     axios
@@ -184,7 +198,7 @@ function CourseVideos() {
       .then((res) => {
         console.log(res.data);
 
-        if (res.data.message === "Quiz attempt saved successfully") {
+        if (res.data.message === "Quiz attempt and log saved successfully") {
           setAttempts(res.data.attempts); // Store all attempts in state
 
           // setScoreDetails({
@@ -232,7 +246,7 @@ function CourseVideos() {
       .then((res) => {
         console.log(res.data);
 
-        if (res.data.message === "Quiz attempt saved successfully") {
+        if (res.data.message === "Quiz attempt and log saved successfully") {
           setAttempts(res.data.attempts); // Store all attempts in state
 
           // setScoreDetails({
@@ -243,6 +257,7 @@ function CourseVideos() {
 
           setShowScoreCard(true); // Set state to show score card
         } else {
+          console.log(res.data);
           toast.error("Error saving quiz");
         }
       })
@@ -321,11 +336,6 @@ function CourseVideos() {
     setStartQuiz(true);
   };
 
-  const videoPaths = {
-    1: "./../Videos/Who Am I_.mov", // replace with the actual path to the video in your project
-    2: "path/to/module2/video.mp4", // replace with the actual path to the video in your project
-  };
-
   return (
     <>
       <div className="container-fluid">
@@ -335,6 +345,7 @@ function CourseVideos() {
             className={`col-auto ${
               isSidebarOpen ? "sidebar-open" : "sidebar-closed"
             }`}
+            style={{ width: isSidebarOpen ? "250px" : "50px" }} // Set a fixed width
           >
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -348,10 +359,17 @@ function CourseVideos() {
               }`}
             >
               <p className="my-4 sidetext p-2">
-                <b style={{ color: "#001040", fontSize: "11px" }}>
-                  {moduleName && moduleName.length > 10 ? (
+                <b
+                  style={{
+                    color: "#001040",
+                    fontSize: "11px",
+                    wordWrap: "break-word", // Break the text if too long
+                    maxWidth: "200px", // Set a max width for module name text
+                  }}
+                >
+                  {moduleName && moduleName.length > 11 ? (
                     <>
-                      {moduleName.slice(0, 10)} <br /> {moduleName.slice(10)}
+                      {moduleName.slice(0, 11)} <br /> {moduleName.slice(11)}
                     </>
                   ) : (
                     moduleName || "Module"
@@ -363,9 +381,9 @@ function CourseVideos() {
 
                 // Limit title to 15 characters and break into two lines if necessary
                 const formattedTitle =
-                  title.length > 9 ? (
+                  title.length > 11 ? (
                     <>
-                      {title.slice(0, 9)} <br /> {title.slice(9)}
+                      {title.slice(0, 11)} <br /> {title.slice(11)}
                     </>
                   ) : (
                     title
@@ -373,7 +391,11 @@ function CourseVideos() {
 
                 return (
                   <div
-                    style={{ color: "#001040" }}
+                    style={{
+                      color: "#001040",
+                      maxWidth: "200px", // Set max width for each item
+                      wordWrap: "break-word", // Ensure long titles break properly
+                    }}
                     key={index}
                     className="card text-dark my-2 p-2 border-0 sideshadow"
                   >
@@ -381,14 +403,19 @@ function CourseVideos() {
                       style={{
                         fontSize: "10px",
                         fontWeight: "bold",
+                        display: "block", // Ensure the link takes up full width
+                        wordWrap: "break-word", // Break long words
+                        maxWidth: "180px", // Ensure consistent width for links
                       }}
                       to="#"
                       className="sidebartext"
-                      onClick={() =>
+                      onClick={() => {
+                        // Set startQuiz to false and handle content change
+                        setStartQuiz(true); // Assuming you have a setter for startQuiz
                         item.quiz_type_name
                           ? handleContentChange("quiz", item.questions)
-                          : handleContentChange("video", [])
-                      }
+                          : handleContentChange("video", []);
+                      }}
                     >
                       <img
                         src={item.quiz_type_name ? sideicon1 : sideicon2}
@@ -480,8 +507,7 @@ function CourseVideos() {
                             />
                             <div
                               style={{ backgroundColor: "#ecfff7" }}
-                              className="p-3"
-                            >
+                              className="p-3">
                               {/* Render user's selected answer */}
                               <p className="ansreviewpara">{`Your Answer: ${item.selectedAnswer}`}</p>
 
@@ -497,9 +523,8 @@ function CourseVideos() {
                           Your answers were submitted.
                         </h4>
                         <button
-                          className=" p-2 scbtn"
-                          onClick={handleViewScore}
-                        >
+                          className="p-2 scbtn btn btn-success"
+                          onClick={handleViewScore}>
                           View Score
                         </button>
                       </div>
@@ -561,7 +586,7 @@ function CourseVideos() {
                           {/* Bootstrap class to make the table responsive */}
                           <table className="table mt-4 border-0 tabletextpart">
                             <thead>
-                              <tr className="tabletextpart">
+                              <tr className="tabletextpart ">
                                 <th>Attempt</th>
                                 <th>State</th>
                                 <th>Marks</th>
@@ -645,8 +670,11 @@ function CourseVideos() {
                         />
 
                         <div className="options">
-                          {questions[currentIndex].options.map(
-                            (optionObj, index) => (
+                          {questions[currentIndex].options
+                            .filter(
+                              (optionObj) => optionObj && optionObj.option
+                            ) // Filter empty or invalid options
+                            .map((optionObj, index) => (
                               <div key={index} className="option d-flex">
                                 <input
                                   type="radio"
@@ -666,9 +694,9 @@ function CourseVideos() {
                                   {optionObj.option}
                                 </label>
                               </div>
-                            )
-                          )}
+                            ))}
                         </div>
+
                         <div className="d-flex justify-content-between my-3">
                           <button
                             className="prevbtn rounded-2"
@@ -786,13 +814,26 @@ function CourseVideos() {
                     <p className="m-2 numberclr">{e.moduleid}</p>
                   </div>
                   <div className="d-flex align-items-center card px-2 mx-3 rightcards border-0">
-                    <p>
-                      {e.modulename}{" "}
-                      <FontAwesomeIcon
-                        icon={faAngleRight}
-                        className="text-dark px-4"
-                      />
-                    </p>
+                    {haspaid ? (
+                      <Link
+                        style={{ textDecoration: "none", color: "#001040" }}
+                        to={`/ken/${course}/${parseInt(e.moduleid)}/${id}`}
+                      >
+                        {e.modulename}{" "}
+                        <FontAwesomeIcon
+                          icon={faAngleRight}
+                          className="text-dark px-4"
+                        />
+                      </Link>
+                    ) : (
+                      <span style={{ color: "#999", cursor: "not-allowed" }}>
+                        {e.modulename}{" "}
+                        <FontAwesomeIcon
+                          icon={faAngleRight}
+                          className="text-dark px-4"
+                        />
+                      </span>
+                    )}
                   </div>
                 </div>
               </React.Fragment>
@@ -841,9 +882,15 @@ function CourseVideos() {
                   navigate(`/`); // Change the route to the default path
                   window.location.reload(); // Force a reload to fetch new content
                 } else {
-                  handleClose(); // Close the modal
-                  navigate(`/ken/${course}/${parseInt(module) + 1}/${id}`); // Change the route with ID
-                  window.location.reload(); // Force a reload to fetch new content
+                  if (haspaid === true) {
+                    console.log("if");
+                    handleClose(); // Close the modal
+                    navigate(`/ken/${course}/${parseInt(module) + 1}/${id}`); // Change the route with ID
+                    window.location.reload(); // Force a reload to fetch new content
+                  } else {
+                    console.log("else", haspaid);
+                    window.location.assign(`/user/${id}`);
+                  }
                 }
               }}
               className="rounded-5 text-light my-4"

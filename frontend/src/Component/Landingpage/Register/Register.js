@@ -1,461 +1,353 @@
-// import React, { useState } from "react";
-// import regim from "../../../Asset/graduatedgirl.png";
-// import "./Register.css";
-// import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
-// function RegisterPage() {
-//   const navigate = useNavigate();
-//   const [formData, setFormData] = useState({
-//     username: "",
-//     phno: "",
-//     email: "",
-//     password: "",
-//     password2: "",
-//   });
-
-//   const [errors, setErrors] = useState({});
-
-//   const handleChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-
-//   const validate = () => {
-//     let tempErrors = {};
-//     const nameRegex = /^[a-zA-Z\s.]{2,}$/;
-//     const phoneRegex = /^[6-9][0-9]{9}$/;
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-//     if (!formData.username || !nameRegex.test(formData.username)) {
-//       tempErrors.username = "Enter your Name";
-//     }
-//     if (!formData.phno || !phoneRegex.test(formData.phno)) {
-//       tempErrors.phno = "Invalid Mobile Number";
-//     }
-//     if (!formData.email || !emailRegex.test(formData.email)) {
-//       tempErrors.email = "Invalid email format.";
-//     }
-//     if (!formData.password || formData.password.length < 8) {
-//       tempErrors.password = "Password must be at least 8 characters long.";
-//     }
-//     if (formData.password !== formData.password2) {
-//       tempErrors.password2 = "Passwords do not match.";
-//     }
-
-//     setErrors(tempErrors);
-//     return Object.keys(tempErrors).length === 0;
-//   };
-
-//   const handleLoginClick = () => {
-//     navigate("/login"); // Ensure '/login' is the correct path for your login page
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (validate()) {
-//       const key = {
-//         name: formData.username,
-//         email: formData.email,
-//         phone_no: formData.phno,
-//         password: formData.password2,
-//       };
-//       axios
-//         .post(${process.env.REACT_APP_API_URL}/auth/register, key)
-//         .then((res) => {
-//           if (res.data.message === "User registered successfully.") {
-//             toast.success("Registration Success");
-//             navigate("/login"); // Redirect to login page after successful registration
-//           } else if (res.data.message === "All fields are required.") {
-//             toast.error("All fields are required.");
-//           } else if (
-//             res.data.message ===
-//             "Email or Phone number already exists in User table."
-//           ) {
-//             toast.error("Email or Phone number already exists in User table.");
-//           } else if (
-//             res.data.message === "Email already exists in Auth table."
-//           ) {
-//             toast.error("Email already exists in Auth table.");
-//           } else if (res.data.message === "Error inserting into User table.") {
-//             toast.error("Error inserting into User table.");
-//           }
-//         })
-//         .catch((e) => {
-//           toast.error("An error occurred. Please try again.");
-//         });
-//     } else {
-//       console.log("Form has errors");
-//     }
-//   };
-
-//   return (
-//     <div className="RegisterApp">
-//       <ToastContainer />
-//       <div className="register-card">
-//         <div className="login-form">
-//           <form onSubmit={handleSubmit}>
-//             <div className="form-group">
-//               <label htmlFor="username">First Name</label>
-//               <input
-//                 type="text"
-//                 id="username"
-//                 name="username"
-//                 placeholder="Enter your name"
-//                 value={formData.username}
-//                 onChange={handleChange}
-//               />
-//               {errors.username && (
-//                 <div className="error-message text-danger">
-//                   {errors.username}
-//                 </div>
-//               )}
-//             </div>
-//             <div className="form-group">
-//               <label htmlFor="username">Last Name</label>
-//               <input
-//                 type="text"
-//                 id="username"
-//                 name="username"
-//                 placeholder="Enter your name"
-//                 value={formData.username}
-//                 onChange={handleChange}
-//               />
-//               {errors.username && (
-//                 <div className="error-message text-danger">
-//                   {errors.username}
-//                 </div>
-//               )}
-//             </div>
-//             <div className="form-group">
-//               <label htmlFor="phno">Mobile Number</label>
-//               <input
-//                 type="text"
-//                 id="phno"
-//                 name="phno"
-//                 placeholder="Enter your mobile number"
-//                 value={formData.phno}
-//                 onChange={handleChange}
-//               />
-//               {errors.phno && (
-//                 <div className="error-message text-danger">{errors.phno}</div>
-//               )}
-//             </div>
-//             <div className="form-group">
-//               <label htmlFor="email">Email</label>
-//               <input
-//                 type="email"
-//                 id="email"
-//                 name="email"
-//                 placeholder="Enter your email"
-//                 value={formData.email}
-//                 onChange={handleChange}
-//               />
-//               {errors.email && (
-//                 <div className="error-message text-danger">{errors.email}</div>
-//               )}
-//             </div>
-//             <div className="form-group">
-//               <label htmlFor="password">Password</label>
-//               <input
-//                 type="password"
-//                 id="password"
-//                 name="password"
-//                 placeholder="Enter a strong password"
-//                 value={formData.password}
-//                 onChange={handleChange}
-//               />
-//               {errors.password && (
-//                 <div className="error-message text-danger">
-//                   {errors.password}
-//                 </div>
-//               )}
-//             </div>
-//             <div className="form-group">
-//               <label htmlFor="password2">Retype Password</label>
-//               <input
-//                 type="password"
-//                 id="password2"
-//                 name="password2"
-//                 placeholder="Retype your password"
-//                 value={formData.password2}
-//                 onChange={handleChange}
-//               />
-//               {errors.password2 && (
-//                 <div className="error-message text-danger">
-//                   {errors.password2}
-//                 </div>
-//               )}
-//             </div>
-//             <div className="form-group button-container">
-//               <button type="submit" className="rounded-3">
-//                 Register
-//               </button>
-//             </div>
-//           </form>
-//           <p>Already have an account? <span className="register-link fw-bold" onClick={handleLoginClick}>
-//             Login
-//           </span></p>
-//         </div>
-//         <div className="login-image">
-//           <img src={regim} alt="register" />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default RegisterPage;
-
 import React, { useState } from "react";
-import regim from "../../../Asset/graduatedgirl.png";
+import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import loginim from "../../../Asset/logimg.png";
 
-function RegisterPage() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phno: "",
-    email: "",
-    password: "",
-    password2: "",
-  });
+function Registerpage() {
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [jobStatus, setJobStatus] = useState("");
+  const [otherProfession, setOtherProfession] = useState(""); // State to store other profession
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
 
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const emailPattern = /^[a-z][a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const validateInput = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    // Full name validation
+    if (!fullname) {
+      newErrors.fullname = "Full Name is required";
+      isValid = false;
+    }
+
+    // Email validation
+    if (!email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!emailPattern.test(email)) {
+      newErrors.email = "Invalid email format";
+      isValid = false;
+    }
+
+    // Phone number validation
+    if (!phone) {
+      newErrors.phone = "Phone number is required";
+      isValid = false;
+    }
+
+    // Qualification validation
+    if (!qualification) {
+      newErrors.qualification = "Qualification is required";
+      isValid = false;
+    }
+
+    // If 'Other' is selected, validate the input for 'other profession'
+    if (jobStatus === "Other" && !otherProfession) {
+      newErrors.otherProfession = "Please specify your profession";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Confirm Password is required";
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
-  const validate = () => {
-    let tempErrors = {};
-    const nameRegex = /^[a-zA-Z\s.]{2,}$/;
-    const phoneRegex = /^[6-9][0-9]{9}$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!formData.firstName || !nameRegex.test(formData.firstName)) {
-      tempErrors.firstName = "Enter your First Name";
-    }
-    if (!formData.lastName || !nameRegex.test(formData.lastName)) {
-      tempErrors.lastName = "Enter your Last Name";
-    }
-    if (!formData.phno || !phoneRegex.test(formData.phno)) {
-      tempErrors.phno = "Invalid Mobile Number";
-    }
-    if (!formData.email || !emailRegex.test(formData.email)) {
-      tempErrors.email = "Invalid email format.";
-    }
-    if (!formData.password || formData.password.length < 8) {
-      tempErrors.password = "Password must be at least 8 characters long.";
-    }
-    // if (formData.password !== formData.password2) {
-    //   tempErrors.password2 = "Passwords do not match.";
-    // }
-
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-  };
-
-  const handleLoginClick = () => {
-    navigate("/login"); // Ensure '/login' is the correct path for your login page
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateInput()) return;
 
-    if (validate()) {
-      const key = {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone_no: formData.phno,
-        password: formData.password,
-      };
-      console.log(key);
+    const registrationData = {
+      fullname,
+      email,
+      phone_no: phone,
+      qualification,
+      jobStatus: jobStatus === "Other" ? otherProfession : jobStatus, // If Other is selected, send the other profession
+      password,
+    };
+    console.log(registrationData);
 
-      axios
-        .post("${process.env.REACT_APP_API_URL}/auth/register", key)
+    try {
+      setIsLoading(true);
+      await axios
+        .post(`${process.env.REACT_APP_API_URL}auth/register`, registrationData)
         .then((res) => {
-          if (res.data.message === "All fields are required.") {
-            toast.success("All fields are required.");
-            navigate("/login"); // Redirect to login page after successful registration
-          } else if (
-            res.data.message === "Error checking email in User table."
-          ) {
-            toast.error("Error checking email in User table.");
-          } else if (
-            res.data.message === "Email already exists in User table."
-          ) {
-            toast.error("Email already exists in User table.");
-          } else if (
-            res.data.message === "Error checking email in Auth table."
-          ) {
-            toast.error("Error checking email in Auth table.");
-          } else if (
-            res.data.message === "Email already exists in Auth table."
-          ) {
-            toast.error("Email already exists in Auth table.");
-          } else if (res.data.message === "Error inserting into User table.") {
-            toast.error("Error inserting into User table.");
-          } else if (res.data.message === "Error inserting into Auth table.") {
-            toast.error("Error inserting into Auth table.");
-          } else if (
-            res.data.message === "Error inserting into Context table."
-          ) {
-            toast.error("Error inserting into Context table.");
-          } else if (
-            res.data.message === "Error updating User table with context_id."
-          ) {
-            toast.error("Error updating User table with context_id.");
+          if (res.data.message === "User registered successfully.") {
+            toast.success("Registration successful!");
+            // navigate("/login");
+            setFullname("");
+            setEmail("");
+            setPhone("");
+            setQualification("");
+            setJobStatus("");
+            setOtherProfession("");
+            setPassword("");
+            setConfirmPassword("");
           } else if (
             res.data.message === "Registration failed. Please try again."
           ) {
             toast.error("Registration failed. Please try again.");
-          } else if (res.data.message === "User registered successfully.") {
-            console.log("User registered successfully.");
-            toast.success("User registered successfully.");
+          } else if (
+            res.data.message === "Email already exists in User table."
+          ) {
+            toast.error("user already registered");
+          } else if (
+            res.data.message === "Email already exists in Auth table."
+          ) {
+            toast.error("user already registered");
           }
-        })
-        .catch((e) => {
-          toast.error("An error occurred. Please try again.");
         });
-    } else {
-      console.log("Form has errors");
+    } catch (err) {
+      toast.error("Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="RegisterApp">
-      <ToastContainer />
-      <div className="register-card">
-        <div className="login-form">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="firstName" className="text-start">
-                <b>First Name</b>
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                placeholder="Enter your first name"
-                value={formData.firstName}
-                onChange={handleChange}
-              />
-              {errors.firstName && (
-                <div className="error-message text-danger">
-                  {errors.firstName}
-                </div>
-              )}
-            </div>
-            <div className="form-group">
-              <label htmlFor="lastName" className="text-start">
-                <b>Last Name</b>
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                placeholder="Enter your last name"
-                value={formData.lastName}
-                onChange={handleChange}
-              />
-              {errors.lastName && (
-                <div className="error-message text-danger">
-                  {errors.lastName}
-                </div>
-              )}
-            </div>
-            <div className="form-group">
-              <label htmlFor="phno" className="text-start">
-                <b>Mobile Number</b>
-              </label>
-              <input
-                type="text"
-                id="phno"
-                name="phno"
-                placeholder="Enter your mobile number"
-                value={formData.phno}
-                onChange={handleChange}
-              />
-              {errors.phno && (
-                <div className="error-message text-danger">{errors.phno}</div>
-              )}
-            </div>
-            <div className="form-group">
-              <label htmlFor="email" className="text-start">
-                <b>Email</b>
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email id"
-                value={formData.email}
-                onChange={handleChange}
-              />
-              {errors.email && (
-                <div className="error-message text-danger">{errors.email}</div>
-              )}
-            </div>
-            <div className="form-group">
-              <label htmlFor="password" className="text-start">
-                <b>Password</b>
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter a strong password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              {errors.password && (
-                <div className="error-message text-danger">
-                  {errors.password}
-                </div>
-              )}
-            </div>
-            {/* <div className="form-group">
-              <label htmlFor="password2">Retype Password</label>
-              <input
-                type="password"
-                id="password2"
-                name="password2"
-                placeholder="Retype your password"
-                value={formData.password2}
-                onChange={handleChange}
-              />
-              {errors.password2 && (
-                <div className="error-message text-danger">
-                  {errors.password2}
-                </div>
-              )}
-            </div> */}
-            <div className="form-group button-container">
-              <button type="submit" className="rounded-3">
-                Register
-              </button>
-            </div>
-          </form>
-          <p>
-            Already have an account?{" "}
-            <span className="register-link fw-bold" onClick={handleLoginClick}>
-              Login
-            </span>
-          </p>
+    <div className="container-fluid p-0 m-0">
+      <div className="row p-0 m-0">
+        <div className="col-lg-5 d-none d-lg-block p-0 m-0">
+          <img src={loginim} className="login-image1" alt="Login" />
         </div>
-        <div className="login-image">
-          <img src={regim} alt="register" />
+        <div className="col-lg-7 col-sm-12">
+          <div className="RegisterApp">
+            <ToastContainer />
+            <div>
+              <div className="register-form">
+                <h1 className="text-center py-4">Sign Up</h1>
+                <p className="logpara">How can we feel to help better today?</p>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="fullname" className="text-start">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="fullname"
+                      name="fullname"
+                      placeholder="Enter your full name"
+                      value={fullname}
+                      onChange={(e) => setFullname(e.target.value)}
+                      className={`frmcontrol ${
+                        errors.fullname ? "error-input" : ""
+                      }`}
+                    />
+                    {errors.fullname && (
+                      <div className="error-text text-start">
+                        {errors.fullname}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="email" className="text-start">
+                      Email
+                    </label>
+                    <input
+                      type="text"
+                      id="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`frmcontrol ${
+                        errors.email ? "error-input" : ""
+                      }`}
+                    />
+                    {errors.email && (
+                      <div className="error-text text-start">
+                        {errors.email}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="phone" className="text-start">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      placeholder="Enter your phone number"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className={`frmcontrol ${
+                        errors.phone ? "error-input" : ""
+                      }`}
+                    />
+                    {errors.phone && (
+                      <div className="error-text text-start">
+                        {errors.phone}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="qualification" className="text-start">
+                      Qualification
+                    </label>
+                    <input
+                      type="text"
+                      id="qualification"
+                      name="qualification"
+                      placeholder="Enter your qualification"
+                      value={qualification}
+                      onChange={(e) => setQualification(e.target.value)}
+                      className={`frmcontrol ${
+                        errors.qualification ? "error-input" : ""
+                      }`}
+                    />
+                    {errors.qualification && (
+                      <div className="error-text text-start">
+                        {errors.qualification}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Job Status Dropdown */}
+                  <div className="form-group">
+                    <label htmlFor="jobStatus" className="text-start">
+                      Proffesion
+                    </label>
+                    <select
+                      id="jobStatus"
+                      name="jobStatus"
+                      value={jobStatus}
+                      onChange={(e) => setJobStatus(e.target.value)}
+                      className="frmcontrol"
+                    >
+                      <option value="">Select Job Status</option>
+                      <option value="Student">Student</option>
+                      <option value="Freelancer">Freelancer</option>
+                      <option value="Employee">Employee</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  {/* Show input field if "Other" is selected */}
+                  {jobStatus === "Other" && (
+                    <div className="form-group">
+                      <label htmlFor="otherProfession" className="text-start">
+                        Specify Your Profession
+                      </label>
+                      <input
+                        type="text"
+                        id="otherProfession"
+                        name="otherProfession"
+                        placeholder="Enter your profession"
+                        value={otherProfession}
+                        onChange={(e) => setOtherProfession(e.target.value)}
+                        className={`frmcontrol ${
+                          errors.otherProfession ? "error-input" : ""
+                        }`}
+                      />
+                      {errors.otherProfession && (
+                        <div className="error-text text-start">
+                          {errors.otherProfession}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="form-group">
+                    <label htmlFor="password" className="text-start">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`frmcontrol ${
+                        errors.password ? "error-input" : ""
+                      }`}
+                    />
+                    {errors.password && (
+                      <div className="error-text text-start">
+                        {errors.password}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword" className="text-start">
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className={`frmcontrol ${
+                        errors.confirmPassword ? "error-input" : ""
+                      }`}
+                    />
+                    {errors.confirmPassword && (
+                      <div className="error-text text-start">
+                        {errors.confirmPassword}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="rounded-3 subbtn"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Registering..." : "Register"}
+                  </button>
+                </form>
+
+                <div className="mt-3 text-center">
+                  <p className="logpara">
+                    Already have an account?{" "}
+                    <Link
+                      to="/login"
+                      style={{ textDecoration: "none" }}
+                      className="register-link"
+                    >
+                      Login
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default RegisterPage;
+export default Registerpage;

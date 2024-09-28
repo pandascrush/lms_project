@@ -96,6 +96,16 @@ function DrmenubarUser() {
                 className="border-0 searchinput"
               />
             </div>
+
+            <Nav.Link
+              as={NavLink}
+              to={`/user/${id}/profile`}
+              className="navpart px-3"
+              activeClassName="active-link"
+            >
+              Profile
+            </Nav.Link>
+
             <Nav.Link
               as={NavLink}
               to="/login"

@@ -333,7 +333,7 @@ const CategoryQuizList = () => {
           </tbody>
         </table>
         <div className="d-flex justify-content-end my-3">
-          <button className="btn btn-primary" onClick={handleAddQuizzes}>
+          <button className="btn" style={{color:"white",backgroundColor:"#001040"}} onClick={handleAddQuizzes}>
             Add
           </button>
         </div>

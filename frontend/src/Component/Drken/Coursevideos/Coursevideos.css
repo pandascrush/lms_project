@@ -153,6 +153,7 @@ tr {
 }
 .tabletextpart th {
   font-size: 15px !important;
+  color: white !important;
 }
 .tabletextpart td {
   font-size: 14px !important;

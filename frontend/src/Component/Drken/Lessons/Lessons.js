@@ -9,13 +9,12 @@ import Button from "react-bootstrap/Button";
 
 function Lessons() {
   const [module, setModule] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Add state for authentication
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // State for authentication
+  const [hasPaid, setHasPaid] = useState(false); // State for payment status
   const [showModal, setShowModal] = useState(false); // State for modal visibility
-  const [modalContent, setModalContent] = useState(null); // State for storing the locked module
+  const [modalContent, setModalContent] = useState(null); // State for storing locked module
   const { id } = useParams();
   const navigate = useNavigate();
-
-  console.log("env", process.env.REACT_APP_API_URL);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -35,13 +34,25 @@ function Lessons() {
     axios
       .get(`${process.env.REACT_APP_API_URL}course/getmodule/1`)
       .then((res) => {
-        console.log(res.data.modules);
         setModule(res.data.modules);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  useEffect(() => {
+    // Fetch payment status
+    axios
+      .get(`${process.env.REACT_APP_API_URL}user/paymentstatus/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        setHasPaid(res.data.hasPaid); // Set the payment status
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
 
   const handleShowModal = (module) => {
     setModalContent(module);
@@ -62,7 +73,8 @@ function Lessons() {
     <div className="container-fluid">
       {module.map((e) => (
         <div key={e.moduleId} className="row lessoncard py-2 rounded-3 my-4">
-          {isAuthenticated || e.moduleId === 1 ? (
+          {/* If the user has paid, show all modules */}
+          {hasPaid ? (
             <Link
               to={`/ken/1/${e.moduleId}/${id}`}
               className="col-sm-12 lessonview text-decoration-none"
@@ -85,29 +97,55 @@ function Lessons() {
               </div>
             </Link>
           ) : (
-            <div
-              className="col-sm-12 lessonview"
-              onClick={() => handleShowModal(e)}
-              style={{ cursor: "pointer" }}
-            >
-              <div className="col-lg-4 d-flex flex-column justify-content-center">
-                <img
-                  src={e.module_image}
-                  alt="lesson"
-                  className="rounded-3 lesson"
-                />
-              </div>
-              <div className="col-lg-6 d-flex flex-column justify-content-center textpart">
-                <h5>Chapter {e.moduleId}</h5>
-                <h3>{e.modulename}</h3>
-                <p>{e.activities}</p>
-              </div>
-              <div className="col-lg-2 d-flex justify-content-center align-items-center">
-                <span className="locked-icon">
-                  <FontAwesomeIcon icon={faLock} />
-                </span>
-              </div>
-            </div>
+            // If the user hasn't paid, only the first module is clickable
+            <>
+              {e.moduleId === 1 ? (
+                <Link
+                  to={`/ken/1/${e.moduleId}/${id}`}
+                  className="col-sm-12 lessonview text-decoration-none"
+                  style={{ color: "#001040" }}
+                >
+                  <div className="col-lg-4 d-flex flex-column justify-content-center">
+                    <img
+                      src={e.module_image}
+                      alt="lesson"
+                      className="rounded-3 lesson"
+                    />
+                  </div>
+                  <div className="col-lg-6 d-flex flex-column justify-content-center textpart">
+                    <h5>Chapter {e.moduleId}</h5>
+                    <h3>{e.modulename}</h3>
+                    <p>{e.activities}</p>
+                  </div>
+                  <div className="col-lg-2 d-flex justify-content-center align-items-center">
+                    <FontAwesomeIcon icon={faAngleRight} />
+                  </div>
+                </Link>
+              ) : (
+                // Other modules are locked
+                <div
+                  className="col-sm-12 lessonview locked"
+                  onClick={() => handleShowModal(e)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="col-lg-4 d-flex flex-column justify-content-center">
+                    <img
+                      src={e.module_image}
+                      alt="lesson"
+                      className="rounded-3 lesson locked-image"
+                    />
+                  </div>
+                  <div className="col-lg-6 d-flex flex-column justify-content-center textpart">
+                    <h5>Chapter {e.moduleId}</h5>
+                    <h3>{e.modulename}</h3>
+                    <p>{e.activities}</p>
+                  </div>
+                  <div className="col-lg-2 d-flex justify-content-center align-items-center">
+                    <FontAwesomeIcon icon={faLock} />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       ))}

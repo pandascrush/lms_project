@@ -1,26 +1,31 @@
+/*------------------------------------------------------------------------------ */
+
 .LoginApp {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   height: 100vh;
-  background-color: #f0f0f0;
-  background-image: linear-gradient(135deg, #841ecc, #e585c4);
+  padding: 0px 100px;
 }
-.login-card {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-  max-width: 600px; /* Adjust the maximum width as needed */
-  width: 100%;
+
+.forget-password-link {
+  text-decoration: none;
+  color: #802626;
+  font-size: 14px;
 }
-.login-form {
+.passlink {
+  color: grey;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+
+
+/* .login-form {
   padding: 20px;
   flex: 1;
-}
+} */
 .login-form h2 {
   margin-bottom: 20px;
 }
@@ -36,17 +41,7 @@
   padding: 8px;
   box-sizing: border-box;
 }
-button {
-  padding: 10px 20px;
-  background-color: #841ecc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-/* button:hover {
-    background-color: #841ECC;
-}   */
+
 .login-image {
   flex: 1;
   display: flex;
@@ -58,30 +53,23 @@ button {
   height: auto;
 }
 
-.form-group input {
-  width: 100%;
-  max-width: 300px; /* Adjust the maximum width as needed */
-  padding: 8px;
-  box-sizing: border-box;
-}
 .button-container {
   display: flex;
   justify-content: center;
 }
 
 .error-text {
-  color: red;
+  color: #802626;
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
 
-.LoginApp {
+/* .LoginApp {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f4f4f4;
-}
+} */
 
 .login-card {
   display: flex;
@@ -89,15 +77,14 @@ button {
   align-items: center;
   flex-direction: column;
   padding: 20px;
-  background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.login-form {
+/* .login-form {
   width: 100%;
-  max-width: 400px;
-}
+  max-width: 700px;
+} */
 
 .logintxt {
   text-align: center;
@@ -133,40 +120,47 @@ button {
   margin-top: 20px;
 }
 
-button.rounded-3 {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
-
-button.rounded-3:hover {
-  background-color: #0056b3;
-}
-
 .register-link {
-  color: #007bff;
+  color: #802626;
   cursor: pointer;
 }
-
-.register-link:hover {
-  text-decoration: underline;
-}
-
-/* .text-center {
-    text-align: center;
-  } */
-
-/* ///login edited */
 
 .logpara {
-  color: #841ecc;
+  color: #802626;
 }
-button {
-  background-color: #841ecc;
+.signinbtn {
+  background-color: #802626;
+  color: #fff;
 }
-#password {
-  border: 0px 0px 1px 0px solid red !important;
+.frmcontrol{
+  width: 100% !important;
+  padding: 10px;
+  border-top: 0px !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 2px solid black;
+  outline: none;
 }
+.login-image {
+  width: 100%;           /* Full width of the column */
+  height: 120vh;         /* Full height of the viewport */
+  object-fit: cover;     /* Ensures the image covers the entire area */
+  margin: 0;             /* Removes any margin */
+  padding: 0;            /* Removes any padding */
+  display: block;        /* Ensure image is displayed as a block element */
+}
+
+
+@media (max-width:426px){
+  .LoginApp {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    height: 100vh;
+    padding: 0px 0px;
+  }
+}
+
+
+
