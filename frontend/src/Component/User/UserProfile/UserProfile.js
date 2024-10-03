@@ -41,7 +41,6 @@ export function Indiviualmenu() {
   };
 
   return (
-   
     <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
       <nav
         className="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 navbar-light bg-white border-bottom border-bottom-lg-0 border-end-lg"
@@ -79,9 +78,6 @@ export function Indiviualmenu() {
                   <i className="bi bi-chat"></i> Payment
                 </Link>
               </li>
-            </ul>
-            <hr className="navbar-divider my-5 opacity-20" />
-            <ul className="navbar-nav">
               <li className="nav-item">
                 <Link
                   className="nav-link text-dark"

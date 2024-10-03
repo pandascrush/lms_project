@@ -45,6 +45,7 @@ function CourseVideos() {
 
   const [haspaid, setHasPaid] = useState();
 
+  //Payment status
   useEffect(() => {
     // Fetch payment status
     axios
@@ -58,6 +59,7 @@ function CourseVideos() {
       });
   }, [id]);
 
+  // Question api
   useEffect(() => {
     axios
       .get(
@@ -86,7 +88,9 @@ function CourseVideos() {
         setLoading(false);
       });
   }, [course, module]);
+  const question = questions[currentIndex];
 
+  // upcoming modules
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}course/${course}/${module}`)
@@ -159,13 +163,30 @@ function CourseVideos() {
     }
   };
 
+  // const handleOptionChange = (event) => {
+  //   const selectedOption = event.target.value;
+  //   setSelectedOptions((prev) => ({
+  //     ...prev,
+  //     [currentIndex]: selectedOption,
+  //   }));
+  //   setAnsweredQuestions((prev) => new Set(prev).add(currentIndex));
+  // };
+
   const handleOptionChange = (event) => {
     const selectedOption = event.target.value;
+
+    // Update the selected options for the current question
     setSelectedOptions((prev) => ({
       ...prev,
       [currentIndex]: selectedOption,
     }));
-    setAnsweredQuestions((prev) => new Set(prev).add(currentIndex));
+
+    // Update the answered questions set
+    setAnsweredQuestions((prev) => {
+      const updatedSet = new Set(prev);
+      updatedSet.add(currentIndex); // Mark the current question as answered
+      return updatedSet;
+    });
   };
 
   const handleSubmitPreAssessment = () => {
@@ -186,35 +207,37 @@ function CourseVideos() {
       })
       .filter(Boolean);
 
-    axios
-      .post(
-        `${
-          process.env.REACT_APP_API_URL
-        }quiz/savequiz/${userId}/${1}/${module}`,
-        {
-          result,
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
+    console.log(result);
 
-        if (res.data.message === "Quiz attempt and log saved successfully") {
-          setAttempts(res.data.attempts); // Store all attempts in state
+    // axios
+    //   .post(
+    //     `${
+    //       process.env.REACT_APP_API_URL
+    //     }quiz/savequiz/${userId}/${1}/${module}`,
+    //     {
+    //       result,
+    //     }
+    //   )
+    //   .then((res) => {
+    //     console.log(res.data);
 
-          // setScoreDetails({
-          //   score: res.data.score, // This is the score of the current attempt
-          //   totalQuestions: res.data.totalQuestions,
-          //   correctAnswers: res.data.correctAnswers,
-          // });
+    //     if (res.data.message === "Quiz attempt and log saved successfully") {
+    //       setAttempts(res.data.attempts); // Store all attempts in state
 
-          setShowScoreCard(true); // Set state to show score card
-        } else {
-          toast.error("Error saving quiz");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    //       // setScoreDetails({
+    //       //   score: res.data.score, // This is the score of the current attempt
+    //       //   totalQuestions: res.data.totalQuestions,
+    //       //   correctAnswers: res.data.correctAnswers,
+    //       // });
+
+    //       setShowScoreCard(true); // Set state to show score card
+    //     } else {
+    //       toast.error("Error saving quiz");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   const handleSubmitPostAssessment = () => {
@@ -507,7 +530,8 @@ function CourseVideos() {
                             />
                             <div
                               style={{ backgroundColor: "#ecfff7" }}
-                              className="p-3">
+                              className="p-3"
+                            >
                               {/* Render user's selected answer */}
                               <p className="ansreviewpara">{`Your Answer: ${item.selectedAnswer}`}</p>
 
@@ -524,7 +548,8 @@ function CourseVideos() {
                         </h4>
                         <button
                           className="p-2 scbtn btn btn-success"
-                          onClick={handleViewScore}>
+                          onClick={handleViewScore}
+                        >
                           View Score
                         </button>
                       </div>
@@ -663,39 +688,92 @@ function CourseVideos() {
                         <div
                           style={{ fontFamily: "Montserrat, sans-serif" }}
                           dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(
-                              questions[currentIndex].text
-                            ),
+                            __html: DOMPurify.sanitize(question.text),
                           }}
                         />
 
-                        <div className="options">
-                          {questions[currentIndex].options
-                            .filter(
-                              (optionObj) => optionObj && optionObj.option
-                            ) // Filter empty or invalid options
-                            .map((optionObj, index) => (
-                              <div key={index} className="option d-flex">
-                                <input
-                                  type="radio"
-                                  id={`option-${currentIndex}-${index}`}
-                                  name={`question-${currentIndex}`}
-                                  value={optionObj.option}
-                                  checked={
-                                    selectedOptions[currentIndex] ===
-                                    optionObj.option
+                        {/* Render based on question type */}
+                        {question.question_type === "multiple_choice" && (
+                          <div className="options">
+                            {questions[currentIndex].options
+                              .filter(
+                                (optionObj) => optionObj && optionObj.option
+                              ) // Filter empty or invalid options
+                              .map((optionObj, index) => (
+                                <div key={index} className="option d-flex">
+                                  <input
+                                    type="radio"
+                                    id={`option-${currentIndex}-${index}`}
+                                    name={`question-${currentIndex}`}
+                                    value={optionObj.option}
+                                    checked={
+                                      selectedOptions[currentIndex] ===
+                                      optionObj.option
+                                    }
+                                    onChange={handleOptionChange}
+                                  />
+                                  <label
+                                    className="mx-2"
+                                    htmlFor={`option-${currentIndex}-${index}`}
+                                  >
+                                    {optionObj.option}
+                                  </label>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+
+                        {question.question_type === "descriptive" && (
+                          <div className="descriptive">
+                            <textarea
+                              rows="4"
+                              placeholder="Type your answer here..."
+                              onChange={(e) =>
+                                handleOptionChange({
+                                  target: { value: e.target.value },
+                                })
+                              }
+                            />
+                          </div>
+                        )}
+
+                        {question.question_type === "match" && (
+                          <div className="match-questions">
+                            {question.match_subquestions.map((subq, index) => (
+                              <div
+                                key={subq.subquestion_id}
+                                className="match-pair d-flex"
+                              >
+                                <div className="subquestion-text">
+                                  {subq.subquestion_text}
+                                </div>
+                                <select
+                                  value={
+                                    selectedOptions[subq.subquestion_id] || ""
                                   }
-                                  onChange={handleOptionChange}
-                                />
-                                <label
-                                  className="mx-2"
-                                  htmlFor={`option-${currentIndex}-${index}`}
+                                  onChange={(e) =>
+                                    handleOptionChange(
+                                      subq.subquestion_id,
+                                      e.target.value
+                                    )
+                                  }
                                 >
-                                  {optionObj.option}
-                                </label>
+                                  <option value="" disabled>
+                                    Select an option
+                                  </option>
+                                  {subq.options.map((opt) => (
+                                    <option
+                                      key={opt.option_text}
+                                      value={opt.option_text}
+                                    >
+                                      {opt.option_text}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
                             ))}
-                        </div>
+                          </div>
+                        )}
 
                         <div className="d-flex justify-content-between my-3">
                           <button
@@ -712,14 +790,10 @@ function CourseVideos() {
                             }}
                             className="btn btn-success"
                             onClick={handleNext}
-                            disabled={!answeredQuestions.has(currentIndex)}
+                            disabled={!answeredQuestions.has(currentIndex)} // Enable button only if question is answered
                           >
                             {currentIndex === questions.length - 1
-                              ? currentDepth === 1
-                                ? "Submit"
-                                : currentDepth === 2
-                                ? "Next Video"
-                                : "Submit"
+                              ? "Submit"
                               : "Next"}
                           </button>
                         </div>

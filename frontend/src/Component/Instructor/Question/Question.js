@@ -10,7 +10,7 @@ import { Link, useParams } from "react-router-dom";
 
 const Question = () => {
   const [content, setContent] = useState("");
-  const [questionType, setQuestionType] = useState("multiple choice");
+  const [questionType, setQuestionType] = useState("multiple_choice");
   const [correctOption, setCorrectOption] = useState("");
   const [options, setOptions] = useState([
     { option: "", feedback: "" },
@@ -30,6 +30,8 @@ const Question = () => {
   const [moduleStructure, setModuleStructure] = useState([]); // State to store fetched data
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [parentModuleId, setParentModuleId] = useState(null);
+  const [matchLeft, setMatchLeft] = useState([""]); // State for left side items
+  const [matchRight, setMatchRight] = useState([""]); // State for right side items
   const editorRef = useRef(null);
 
   const { id } = useParams();
@@ -135,6 +137,28 @@ const Question = () => {
     }
   };
 
+  const handleMatchChange = (index, value, side) => {
+    if (side === "left") {
+      const newMatchLeft = [...matchLeft];
+      newMatchLeft[index] = value;
+      setMatchLeft(newMatchLeft);
+    } else {
+      const newMatchRight = [...matchRight];
+      newMatchRight[index] = value;
+      setMatchRight(newMatchRight);
+    }
+  };
+
+  const addMatchPair = () => {
+    setMatchLeft([...matchLeft, ""]);
+    setMatchRight([...matchRight, ""]);
+  };
+
+  const removeMatchPair = (index) => {
+    setMatchLeft(matchLeft.filter((_, i) => i !== index));
+    setMatchRight(matchRight.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async () => {
     // Create a new FormData object
     const formData = new FormData();
@@ -146,7 +170,24 @@ const Question = () => {
     formData.append("selectedModuleId", selectedModuleId);
     formData.append("parentModuleId", parentModuleId);
 
-    formData.append("options", JSON.stringify(options));
+    if (questionType === "multiple_choice" || questionType === "true/false") {
+      formData.append("options", JSON.stringify(options)); // Append options
+    }
+
+    if (questionType === "description") {
+      formData.append("keywords", JSON.stringify(keywords)); // Append keywords for descriptive questions
+    }
+
+    if (questionType === "match_following") {
+      const matches = matchLeft.map((left, index) => ({
+        leftItem: left,
+        rightItem: matchRight[index],
+      }));
+      formData.append("matches", JSON.stringify(matches));  // Append the matches
+    }    
+
+    console.log(questionType);
+    console.log(formData);
 
     try {
       const res = await axios.post(
@@ -223,6 +264,7 @@ const Question = () => {
               <option value="multiple choice">Multiple Choice</option>
               <option value="description">Description</option>
               <option value="true/false">True/False</option>
+              <option value="match_following">match_following</option>
             </select>
           </div>
           {/* <div className="mx-2">
@@ -304,7 +346,49 @@ const Question = () => {
           </div>
         )}
 
-        {questionType === "multiple choice" && (
+        {questionType === "match_following" && (
+          <div style={{ marginTop: "10px" }}>
+            <h5>Match the Following:</h5>
+            {matchLeft.map((leftItem, index) => (
+              <div
+                key={index}
+                style={{ display: "flex", marginBottom: "10px" }}
+              >
+                <input
+                  type="text"
+                  value={leftItem}
+                  onChange={(e) =>
+                    handleMatchChange(index, e.target.value, "left")
+                  }
+                  placeholder={`Left Item ${index + 1}`}
+                  className="form-control mx-1"
+                  style={{ width: "200px" }}
+                />
+                <input
+                  type="text"
+                  value={matchRight[index] || ""}
+                  onChange={(e) =>
+                    handleMatchChange(index, e.target.value, "right")
+                  }
+                  placeholder={`Right Item ${index + 1}`}
+                  className="form-control mx-1"
+                  style={{ width: "200px" }}
+                />
+                <button
+                  onClick={() => removeMatchPair(index)}
+                  className="btn btn-danger btn-sm mx-1"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button onClick={addMatchPair} className="btn btn-secondary">
+              <FaPlus /> Add Pair
+            </button>
+          </div>
+        )}
+
+        {questionType === "multiple_choice" && (
           <div style={{ marginTop: "10px" }}>
             {options.map((optionObj, index) => (
               <div key={index} style={{ marginBottom: "20px" }}>
@@ -386,7 +470,7 @@ const Question = () => {
                 />
                 <label style={{ marginLeft: "20px" }}>Marks:</label>
                 <input
-                  type="number"
+                  type="text"
                   value={keyword.marks}
                   onChange={(e) =>
                     handleKeywordChange(index, "marks", e.target.value)
@@ -394,29 +478,25 @@ const Question = () => {
                   style={{ marginLeft: "10px" }}
                 />
                 <button
-                  className="m-3 feedbackbtn rounded-2"
+                  className="btn btn-danger btn-sm ms-3"
                   onClick={() => removeKeyword(index)}
                 >
                   Remove
                 </button>
               </div>
             ))}
-            <button className="m-3 feedbackbtn rounded-2" onClick={addKeyword}>
-              Add Keyword
-            </button>
+            <div className="mt-3">
+              <button className="btn btn-outline-primary" onClick={addKeyword}>
+                <FaPlus /> Add Keyword
+              </button>
+            </div>
           </div>
         )}
 
-        <div className="d-flex justify-content-center" style={{ gap: "10px" }}>
+        <div className="mt-4">
           <button
-            className="subbtn" // Changed to 'btn-sm' for smaller button
-            style={{
-              marginTop: "20px",
-              color: "white",
-              backgroundColor: "#802626",
-              padding: "8px 16px", // Smaller padding for reduced size
-              fontSize: "14px", // Adjusted font size
-            }}
+            className="btn"
+            style={{ color: "white", backgroundColor: "#001040" }}
             onClick={handleSubmit}
           >
             Submit Question

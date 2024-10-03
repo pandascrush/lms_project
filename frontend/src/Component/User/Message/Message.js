@@ -79,9 +79,6 @@ export function Message() {
                   <i className="bi bi-chat"></i> Payment
                 </Link>
               </li>
-            </ul>
-            <hr className="navbar-divider my-5 opacity-20" />
-            <ul className="navbar-nav">
               <li className="nav-item">
                 <Link
                   className="nav-link text-dark"
