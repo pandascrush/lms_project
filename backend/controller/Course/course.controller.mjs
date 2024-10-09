@@ -1054,7 +1054,6 @@ const fetchQuestionOptions = (questions, callback) => {
   });
 };
 
-// Helper function to fetch subquestions and options for match-type questions
 const fetchMatchSubquestionsAndOptions = (quiz_text_id, callback) => {
   // Step 1: Fetch subquestions associated with the quiz
   const fetchSubquestionsQuery = `
@@ -1069,24 +1068,34 @@ const fetchMatchSubquestionsAndOptions = (quiz_text_id, callback) => {
       return callback({ message: "Error fetching match subquestions" });
     }
 
-    // Step 2: Fetch all options for all subquestions
+    if (subquestions.length === 0) {
+      return callback(null, { subquestions: [] }); // No subquestions found
+    }
+
+    // Step 2: Collect subquestion IDs
+    const subquestionIds = subquestions.map(subq => subq.subquestion_id);
+
+    // Use a parameterized query with the list of subquestion IDs
     const fetchOptionsQuery = `
-      SELECT option_text 
+      SELECT subquestion_id, option_text 
       FROM match_options 
+      WHERE subquestion_id IN (?)
     `;
 
-    db.query(fetchOptionsQuery, (err, options) => {
+    // Use the correct way to pass an array to the SQL query
+    db.query(fetchOptionsQuery, [subquestionIds], (err, options) => {
       if (err) {
         console.error("Error fetching match options:", err);
         return callback({ message: "Error fetching match options" });
       }
 
-      // Step 3: Format subquestions with all options
-      const formattedSubquestions = subquestions.map((subq) => {
+      // Step 3: Format subquestions with their associated options
+      const formattedSubquestions = subquestions.map(subq => {
+        const matchedOptions = options.filter(opt => opt.subquestion_id === subq.subquestion_id);
         return {
           subquestion_id: subq.subquestion_id,
           subquestion_text: subq.subquestion_text,
-          options: options.map((opt) => ({ option_text: opt.option_text })), // Include all options
+          options: options
         };
       });
 

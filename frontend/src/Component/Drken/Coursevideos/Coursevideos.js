@@ -172,91 +172,158 @@ function CourseVideos() {
   //   setAnsweredQuestions((prev) => new Set(prev).add(currentIndex));
   // };
 
-  const handleOptionChange = (event) => {
+  const handleOptionChange = (questionId, subquestionId = null, event) => {
     const selectedOption = event.target.value;
 
-    // Update the selected options for the current question
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [currentIndex]: selectedOption,
-    }));
+    setSelectedOptions((prev) => {
+      if (subquestionId) {
+        // For match-the-following questions
+        return {
+          ...prev,
+          [`${questionId}_${subquestionId}`]: selectedOption, // Use a combination of questionId and subquestionId as key
+        };
+      } else {
+        // For multiple choice or descriptive questions
+        return {
+          ...prev,
+          [questionId]: selectedOption,
+        };
+      }
+    });
 
-    // Update the answered questions set
+    // Mark the question as answered
     setAnsweredQuestions((prev) => {
       const updatedSet = new Set(prev);
-      updatedSet.add(currentIndex); // Mark the current question as answered
+      updatedSet.add(questionId); // Add only the main questionId to the answered set
       return updatedSet;
     });
   };
 
   const handleSubmitPreAssessment = () => {
     const userId = id === undefined || id === "undefined" ? 0 : id;
-    // console.log(typeof userId);
-    console.log(id);
-    console.log(userId);
+    const result = []; // For multiple choice questions
+    const match = []; // For match-the-following questions
+    const desc = []; // For descriptive questions
 
-    const result = Object.keys(selectedOptions)
-      .map((questionIndex) => {
-        const question = questions[parseInt(questionIndex, 10)];
-        if (!question) return null;
-        return {
+    questions.forEach((question) => {
+      // Handle multiple choice questions
+      if (question.question_type === "multiple_choice") {
+        const userAnswer = selectedOptions[question.id];
+        result.push({
           question_id: question.id,
-          user_answer: selectedOptions[questionIndex],
-          correct: selectedOptions[questionIndex] === question.correct_answer,
-        };
-      })
-      .filter(Boolean);
+          user_answer: userAnswer || null,
+          correct: userAnswer === question.correct_answer, // Uncomment if needed
+        });
+      }
+
+      // Handle match-the-following questions
+      else if (question.question_type === "match") {
+        const matchAnswers = question.match_subquestions.map((subq) => {
+          const userAnswer =
+            selectedOptions[`${question.id}_${subq.subquestion_id}`]; // Retrieve based on questionId + subquestionId
+          return {
+            subquestion_id: subq.subquestion_id,
+            user_answer: userAnswer || null,
+            // correct: userAnswer === subq.correct_answer,
+          };
+        });
+
+        match.push({
+          question_id: question.id,
+          match_answers: matchAnswers,
+        });
+      }
+
+      // Handle descriptive questions
+      else if (question.question_type === "descriptive") {
+        const userAnswer = selectedOptions[question.id];
+        desc.push({
+          question_id: question.id,
+          user_answer: userAnswer || null,
+        });
+      }
+    });
 
     console.log(result);
+    console.log(match);
+    console.log(desc);
 
-    // axios
-    //   .post(
-    //     `${
-    //       process.env.REACT_APP_API_URL
-    //     }quiz/savequiz/${userId}/${1}/${module}`,
-    //     {
-    //       result,
-    //     }
-    //   )
-    //   .then((res) => {
-    //     console.log(res.data);
-
-    //     if (res.data.message === "Quiz attempt and log saved successfully") {
-    //       setAttempts(res.data.attempts); // Store all attempts in state
-
-    //       // setScoreDetails({
-    //       //   score: res.data.score, // This is the score of the current attempt
-    //       //   totalQuestions: res.data.totalQuestions,
-    //       //   correctAnswers: res.data.correctAnswers,
-    //       // });
-
-    //       setShowScoreCard(true); // Set state to show score card
-    //     } else {
-    //       toast.error("Error saving quiz");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    // API submission
+    axios
+      .post(
+        `${
+          process.env.REACT_APP_API_URL
+        }quiz/savequiz/${userId}/${1}/${module}`,
+        {
+          result,
+          match,
+          desc,
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.message === "Quiz attempt and log saved successfully") {
+          setAttempts(res.data.attempts);
+          setShowScoreCard(true);
+        } else {
+          toast.error("Error saving quiz");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleSubmitPostAssessment = () => {
     const userId = id === undefined || id === "undefined" ? 0 : id;
+    const result = []; // For multiple choice questions
+    const match = []; // For match-the-following questions
+    const desc = []; // For descriptive questions
 
-    const result = Object.keys(selectedOptions)
-      .map((questionIndex) => {
-        const question = questions[parseInt(questionIndex, 10)];
-        if (!question) return null;
-        return {
+    questions.forEach((question) => {
+      // Handle multiple choice questions
+      if (question.question_type === "multiple_choice") {
+        const userAnswer = selectedOptions[question.id];
+        result.push({
           question_id: question.id,
-          user_answer: selectedOptions[questionIndex],
-          correct: selectedOptions[questionIndex] === question.correct_answer,
-        };
-      })
-      .filter(Boolean);
+          user_answer: userAnswer || null,
+          correct: userAnswer === question.correct_answer, // Uncomment if needed
+        });
+      }
 
-    // console.log(result);
+      // Handle match-the-following questions
+      else if (question.question_type === "match") {
+        const matchAnswers = question.match_subquestions.map((subq) => {
+          const userAnswer =
+            selectedOptions[`${question.id}_${subq.subquestion_id}`]; // Retrieve based on questionId + subquestionId
+          return {
+            subquestion_id: subq.subquestion_id,
+            user_answer: userAnswer || null,
+            // correct: userAnswer === subq.correct_answer,
+          };
+        });
 
+        match.push({
+          question_id: question.id,
+          match_answers: matchAnswers,
+        });
+      }
+
+      // Handle descriptive questions
+      else if (question.question_type === "descriptive") {
+        const userAnswer = selectedOptions[question.id];
+        desc.push({
+          question_id: question.id,
+          user_answer: userAnswer || null,
+        });
+      }
+    });
+
+    console.log(result);
+    console.log(match);
+    console.log(desc);
+
+    // API submission
     axios
       .post(
         `${
@@ -264,23 +331,16 @@ function CourseVideos() {
         }quiz/savequiz/${userId}/${2}/${module}`,
         {
           result,
+          match,
+          desc,
         }
       )
       .then((res) => {
         console.log(res.data);
-
         if (res.data.message === "Quiz attempt and log saved successfully") {
-          setAttempts(res.data.attempts); // Store all attempts in state
-
-          // setScoreDetails({
-          //   score: res.data.score, // This is the score of the current attempt
-          //   totalQuestions: res.data.totalQuestions,
-          //   correctAnswers: res.data.correctAnswers,
-          // });
-
-          setShowScoreCard(true); // Set state to show score card
+          setAttempts(res.data.attempts);
+          setShowScoreCard(true);
         } else {
-          console.log(res.data);
           toast.error("Error saving quiz");
         }
       })
@@ -381,13 +441,11 @@ function CourseVideos() {
                 isSidebarOpen ? "d-block" : "d-none"
               }`}
             >
-              <p className="my-4 sidetext p-2">
+              <p className="my-3 sidetext p-2">
                 <b
                   style={{
                     color: "#001040",
-                    fontSize: "11px",
-                    wordWrap: "break-word", // Break the text if too long
-                    maxWidth: "200px", // Set a max width for module name text
+                    fontSize: "20px",
                   }}
                 >
                   {moduleName && moduleName.length > 11 ? (
@@ -402,7 +460,6 @@ function CourseVideos() {
               {sidebarItems.map((item, index) => {
                 const title = item.quiz_type_name || item.activity_name;
 
-                // Limit title to 15 characters and break into two lines if necessary
                 const formattedTitle =
                   title.length > 11 ? (
                     <>
@@ -416,25 +473,22 @@ function CourseVideos() {
                   <div
                     style={{
                       color: "#001040",
-                      maxWidth: "200px", // Set max width for each item
-                      wordWrap: "break-word", // Ensure long titles break properly
+                      maxWidth: "200px",
                     }}
                     key={index}
                     className="card text-dark my-2 p-2 border-0 sideshadow"
                   >
                     <Link
                       style={{
-                        fontSize: "10px",
+                        fontSize: "14px",
                         fontWeight: "bold",
-                        display: "block", // Ensure the link takes up full width
-                        wordWrap: "break-word", // Break long words
-                        maxWidth: "180px", // Ensure consistent width for links
+                        display: "block",
+                        maxWidth: "300px",
                       }}
                       to="#"
                       className="sidebartext"
                       onClick={() => {
-                        // Set startQuiz to false and handle content change
-                        setStartQuiz(true); // Assuming you have a setter for startQuiz
+                        setStartQuiz(true);
                         item.quiz_type_name
                           ? handleContentChange("quiz", item.questions)
                           : handleContentChange("video", []);
@@ -455,7 +509,7 @@ function CourseVideos() {
 
           <div
             className={`col ${
-              isSidebarOpen ? "col-sm-12 col-lg-6" : "col-sm-12 col-lg-6"
+              isSidebarOpen ? "col-sm-12 col-md-6" : "col-sm-12 col-md-6"
             } mt-5 secondpartquiz px-2`}
           >
             <div className="mt-lg-5">
@@ -469,7 +523,6 @@ function CourseVideos() {
                 </>
               )}
               {!startQuiz ? (
-                // Show introductory content before quiz
                 <div className="quizpart p-3 quizparttext">
                   <h1 className="profoundhead my-4">
                     To Me Testing Is A Profound Duty.
@@ -695,86 +748,94 @@ function CourseVideos() {
                         {/* Render based on question type */}
                         {question.question_type === "multiple_choice" && (
                           <div className="options">
-                            {questions[currentIndex].options
-                              .filter(
-                                (optionObj) => optionObj && optionObj.option
-                              ) // Filter empty or invalid options
-                              .map((optionObj, index) => (
-                                <div key={index} className="option d-flex">
-                                  <input
-                                    type="radio"
-                                    id={`option-${currentIndex}-${index}`}
-                                    name={`question-${currentIndex}`}
-                                    value={optionObj.option}
-                                    checked={
-                                      selectedOptions[currentIndex] ===
-                                      optionObj.option
-                                    }
-                                    onChange={handleOptionChange}
-                                  />
-                                  <label
-                                    className="mx-2"
-                                    htmlFor={`option-${currentIndex}-${index}`}
-                                  >
-                                    {optionObj.option}
-                                  </label>
-                                </div>
-                              ))}
-                          </div>
-                        )}
-
-                        {question.question_type === "descriptive" && (
-                          <div className="descriptive">
-                            <textarea
-                              rows="4"
-                              placeholder="Type your answer here..."
-                              onChange={(e) =>
-                                handleOptionChange({
-                                  target: { value: e.target.value },
-                                })
-                              }
-                            />
-                          </div>
-                        )}
-
-                        {question.question_type === "match" && (
-                          <div className="match-questions">
-                            {question.match_subquestions.map((subq, index) => (
-                              <div
-                                key={subq.subquestion_id}
-                                className="match-pair d-flex"
-                              >
-                                <div className="subquestion-text">
-                                  {subq.subquestion_text}
-                                </div>
-                                <select
-                                  value={
-                                    selectedOptions[subq.subquestion_id] || ""
+                            {question.options.map((optionObj, index) => (
+                              <div key={index} className="option d-flex">
+                                <input
+                                  type="radio"
+                                  id={`option-${question.id}-${index}`}
+                                  name={`question-${question.id}`} // Ensure unique name for each question
+                                  value={optionObj.option}
+                                  checked={
+                                    selectedOptions[question.id] ===
+                                    optionObj.option
                                   }
                                   onChange={(e) =>
-                                    handleOptionChange(
-                                      subq.subquestion_id,
-                                      e.target.value
-                                    )
-                                  }
+                                    handleOptionChange(question.id, null, e)
+                                  } // No subquestionId for MCQ
+                                />
+                                <label
+                                  className="mx-2"
+                                  htmlFor={`option-${question.id}-${index}`}
                                 >
-                                  <option value="" disabled>
-                                    Select an option
-                                  </option>
-                                  {subq.options.map((opt) => (
-                                    <option
-                                      key={opt.option_text}
-                                      value={opt.option_text}
-                                    >
-                                      {opt.option_text}
-                                    </option>
-                                  ))}
-                                </select>
+                                  {optionObj.option}
+                                </label>
                               </div>
                             ))}
                           </div>
                         )}
 
+                        {/* Render descriptive question */}
+                        {question.question_type === "descriptive" && (
+                          <div className="descriptive">
+                            <input
+                              type="text"
+                              rows="4"
+                              placeholder="Type your answer here..."
+                              onChange={(e) =>
+                                handleOptionChange(question.id, null, e)
+                              } // Pass the question ID and event
+                            />
+                          </div>
+                        )}
+
+                        {/* Render match-the-following question */}
+                        {question.question_type === "match" && (
+                          <div className="match-questions">
+                            {question.match_subquestions.map((subq, index) => (
+                              <div
+                                key={subq.subquestion_id}
+                                className="match-pair row my-5"
+                              >
+                                <div className="col-4">
+                                  <div className="subquestion-text">
+                                    {index + 1}. {subq.subquestion_text}
+                                  </div>
+                                </div>
+                                <div className="col-8">
+                                  <select
+                                    className="form-select form-select-sm py-2"
+                                    value={
+                                      selectedOptions[
+                                        `${question.id}_${subq.subquestion_id}`
+                                      ] || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleOptionChange(
+                                        question.id,
+                                        subq.subquestion_id,
+                                        e
+                                      )
+                                    }
+                                  >
+                                    <option value="" disabled>
+                                      Select an option
+                                    </option>
+                                    {subq.options.map((opt) => (
+                                      <option
+                                        key={opt.option_text}
+                                        value={opt.option_text}
+                                      >
+                                        {opt.option_text}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Navigation Buttons */}
                         <div className="d-flex justify-content-between my-3">
                           <button
                             className="prevbtn rounded-2"
@@ -790,7 +851,11 @@ function CourseVideos() {
                             }}
                             className="btn btn-success"
                             onClick={handleNext}
-                            disabled={!answeredQuestions.has(currentIndex)} // Enable button only if question is answered
+                            disabled={
+                              currentIndex === questions.length - 1
+                                ? false // Enable the submit button for the last question
+                                : !answeredQuestions.has(question.id)
+                            } // Enable only if question is answered for others
                           >
                             {currentIndex === questions.length - 1
                               ? "Submit"

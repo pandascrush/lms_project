@@ -22,14 +22,14 @@ export const addQuestion = (req, res) => {
     }
 
     const {
-      content,         // Question content
-      options,         // For multiple_choice/true_false
+      content, // Question content
+      options, // For multiple_choice/true_false
       selectedModuleId, // Module id
-      parentModuleId,  // Course id
-      correctOption,   // Correct answer for MCQ/True-False
-      questionType,    // Type of question
-      keywords,        // For descriptive type
-      matches,         // For match-the-following pairs
+      parentModuleId, // Course id
+      correctOption, // Correct answer for MCQ/True-False
+      questionType, // Type of question
+      keywords, // For descriptive type
+      matches, // For match-the-following pairs
     } = req.body;
 
     console.log(
@@ -55,10 +55,10 @@ export const addQuestion = (req, res) => {
       queryParams = [
         content,
         JSON.stringify(JSON.parse(options)), // Parse the options sent as JSON string
-        correctOption,                      // Correct option
-        parentModuleId,                     // Course ID
-        selectedModuleId,                   // Module ID
-        questionType                        // Question type
+        correctOption, // Correct option
+        parentModuleId, // Course ID
+        selectedModuleId, // Module ID
+        questionType, // Question type
       ];
     }
     // Insert logic for descriptive questions
@@ -118,20 +118,28 @@ export const addQuestion = (req, res) => {
               INSERT INTO match_subquestions (quiz_text_id, subquestion_text)
               VALUES (?, ?)
             `;
-            db.query(insertLeftQuery, [quizTextId, leftItem], (err, subResult) => {
-              if (err) return reject(err);
+            db.query(
+              insertLeftQuery,
+              [quizTextId, leftItem],
+              (err, subResult) => {
+                if (err) return reject(err);
 
-              const subquestionId = subResult.insertId;
+                const subquestionId = subResult.insertId;
 
-              const insertRightQuery = `
+                const insertRightQuery = `
                 INSERT INTO match_options (subquestion_id, option_text, is_correct)
                 VALUES (?, ?, ?)
               `;
-              db.query(insertRightQuery, [subquestionId, rightItem, true], (err) => {
-                if (err) return reject(err);
-                resolve();
-              });
-            });
+                db.query(
+                  insertRightQuery,
+                  [subquestionId, rightItem, true],
+                  (err) => {
+                    if (err) return reject(err);
+                    resolve();
+                  }
+                );
+              }
+            );
           });
         });
 
@@ -458,86 +466,241 @@ export const fetchQuizQuestions = (req, res) => {
 };
 
 export function saveQuizAttempt(req, res) {
-  const { user_id, ass_id, module } = req.params; // Get user_id, ass_id, and module from req.params
-  const { result } = req.body; // Get result from req.body (should be the quiz result array)
+  const { user_id, ass_id, module } = req.params;
+  const { result = [], match = [], desc = [] } = req.body; // Default to empty arrays
 
-  console.log(user_id, ass_id, result);
+  console.log(user_id, ass_id, result, match, desc);
 
-  // Step 1: Calculate the score based on the number of correct answers
-  const totalQuestions = result.length;
-  const correctAnswers = result.filter(
+  // Calculate the total number of questions
+  const totalQuestions = result.length + match.length + desc.length;
+  console.log("Total Questions:", totalQuestions);
+
+  // Step 1: Calculate the score for multiple-choice questions
+  const correctAnswersMC = result.filter(
     (question) => question.correct === true
   ).length;
-  const score = Math.round((correctAnswers / totalQuestions) * 100); // Score as a percentage
+  const mcScore =
+    result.length > 0
+      ? Math.round((correctAnswersMC / result.length) * 100)
+      : 0;
+  console.log("Multiple-Choice Score:", mcScore);
 
-  console.log(score, totalQuestions, correctAnswers);
+  // Correct answer count starts with multiple-choice correct answers
+  let correctAnswers = correctAnswersMC;
 
-  // Step 2: Get the previous attempt count for this user and assessment
-  const queryPreviousAttemptCount = `
-    SELECT attempt_count
-    FROM quiz_attempt
-    WHERE user_id = ? AND assessment_type = ? AND moduleid = ?
-    ORDER BY attempt_timestamp DESC
-    LIMIT 1
-  `;
+  // Step 2: Calculate score for match questions
+  let matchScore = 0;
+  let correctMatchAnswers = 0;
 
-  db.query(
-    queryPreviousAttemptCount,
-    [user_id, ass_id, module],
-    (err, dbRes) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({ error: "Database error" });
-      }
+  if (match && match.length > 0) {
+    const promises = match.map(
+      (matchQuestion) =>
+        new Promise((resolve, reject) => {
+          let isMatchCorrect = true;
 
-      let newAttemptCount = 1; // Default to 1 if no previous attempts are found
+          const matchPromises = matchQuestion.match_answers.map((answer) => {
+            const queryGetCorrectAnswer = `
+            SELECT option_text 
+            FROM match_options 
+            WHERE subquestion_id = ? LIMIT 1
+          `;
 
-      // If there are previous attempts, get the latest count and increment
-      if (dbRes.length > 0) {
-        const previousAttempt = dbRes[0];
-        newAttemptCount = previousAttempt.attempt_count + 1;
-      }
+            return new Promise((subResolve, subReject) => {
+              db.query(
+                queryGetCorrectAnswer,
+                [answer.subquestion_id],
+                (err, result) => {
+                  if (err) {
+                    console.error("Error fetching correct answer:", err);
+                    return subReject(err);
+                  }
 
-      // Step 3: Insert a new row with the new attempt count
-      const queryInsertNewAttempt = `
-      INSERT INTO quiz_attempt (user_id, result, attempt_count, assessment_type, attempt_timestamp, score, moduleid)
-      VALUES (?, ?, ?, ?, NOW(), ?, ?)
+                  const correctAnswer = result[0]?.option_text || null;
+                  if (answer.user_answer !== correctAnswer) {
+                    isMatchCorrect = false; // If any sub-answer is incorrect, the whole match question is incorrect
+                  }
+                  subResolve();
+                }
+              );
+            });
+          });
+
+          Promise.all(matchPromises)
+            .then(() => {
+              if (isMatchCorrect) {
+                correctMatchAnswers++; // Increment correctAnswers only if all match sub-answers are correct
+              }
+              resolve();
+            })
+            .catch((err) => reject(err));
+        })
+    );
+
+    Promise.all(promises)
+      .then(() => {
+        matchScore = Math.round(
+          (correctMatchAnswers / (match.length || 1)) * 100 * 0.25
+        );
+        console.log("Match Score:", matchScore);
+
+        // Update correctAnswers with match type
+        correctAnswers += correctMatchAnswers;
+        finalizeScoring();
+      })
+      .catch((err) => {
+        console.error("Error processing match questions:", err);
+        res
+          .status(500)
+          .json({ error: "Error calculating match question score" });
+      });
+  } else {
+    finalizeScoring();
+  }
+
+  // Step 3: Validate descriptive questions
+  if (desc.length > 0) {
+    const descPromises = desc.map((descQuestion) => {
+      return new Promise((resolve, reject) => {
+        const queryGetKeywords = "SELECT `option` FROM quiz_text WHERE id = ?";
+        db.query(
+          queryGetKeywords,
+          [descQuestion.question_id],
+          (err, result) => {
+            if (err) {
+              console.error("Error fetching keywords:", err);
+              return reject(err); // Reject if there's an error
+            }
+
+            const keywords = result[0]?.option || []; // Ensure this matches your field
+            const userAnswer = descQuestion.user_answer;
+
+            // console.log(keywords);
+            // console.log(userAnswer);
+
+            // Check if user's answer matches any keywords
+            const isCorrect = keywords.some(
+              (option) =>
+                option.keyword.trim().toLowerCase() ===
+                userAnswer.trim().toLowerCase()
+            );
+            // console.log(isCorrect);
+
+            // If correct, count as 1, else 0
+            resolve(isCorrect ? 1 : 0);
+          }
+        );
+      });
+    });
+
+    Promise.all(descPromises)
+      .then((descScores) => {
+        const correctDescAnswers = descScores.reduce(
+          (total, score) => total + score,
+          0
+        );
+        const descScore = correctDescAnswers; // Each correct answer gets 1 mark
+        console.log("Descriptive Score:", descScore);
+
+        // Add descriptive correct answers
+        correctAnswers += correctDescAnswers;
+        console.log(correctAnswers);
+
+        console.log("Finalizing scoring...");
+        finalizeScoring(); // Ensure finalizeScoring does not send a response
+      })
+      .catch((err) => {
+        console.error("Error processing descriptive questions:", err);
+        if (!res.headersSent) {
+          // Check if headers were already sent
+          console.log("Sending error response");
+          return res
+            .status(500)
+            .json({ error: "Error calculating descriptive question score" });
+        }
+      });
+  }
+  // After this block, ensure no other responses are sent
+  // else {
+  //   finalizeScoring();
+  // }
+
+  // Step 4: Combine scores and return response
+  function finalizeScoring() {
+    // Determine how to divide the score based on which question types exist
+    let totalScore;
+    const typesCount = [
+      result.length > 0,
+      match.length > 0,
+      desc.length > 0,
+    ].filter(Boolean).length;
+
+    if (typesCount === 1) {
+      // Only one type of question, return the score directly
+      totalScore = mcScore || matchScore || 0;
+    } else if (typesCount === 2) {
+      // Two types of questions, divide by 2
+      totalScore = Math.round((mcScore + matchScore + 0) / 2);
+    } else if (typesCount === 3) {
+      // All three types of questions, divide by 3
+      totalScore = Math.round((mcScore + matchScore + 0) / 3);
+    }
+
+    console.log("Total Score:", totalScore);
+    console.log("Total Correct Answers:", correctAnswers);
+
+    // Step 5: Get previous attempt count and store the attempt
+    const queryPreviousAttemptCount = `
+      SELECT attempt_count
+      FROM quiz_attempt
+      WHERE user_id = ? AND assessment_type = ? AND moduleid = ?
+      ORDER BY attempt_timestamp DESC
+      LIMIT 1
     `;
 
-      db.query(
-        queryInsertNewAttempt,
-        [
-          user_id,
-          JSON.stringify(result),
-          newAttemptCount,
-          ass_id,
-          score,
-          module,
-        ],
-        (insertErr, insertResult) => {
-          if (insertErr) {
-            console.log(insertErr);
-            return res.json({ error: "Error inserting new attempt" });
-          }
+    db.query(
+      queryPreviousAttemptCount,
+      [user_id, ass_id, module],
+      (err, dbRes) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: "Database error" });
+        }
 
-          // Step 4: Insert into the standardlog table based on ass_id
-          let eventName;
-          if (ass_id == 1) {
-            eventName = "Pre-Assessment";
-          } else if (ass_id == 2) {
-            eventName = "Post-Assessment";
-          }
+        let newAttemptCount = 1;
+        if (dbRes.length > 0) {
+          newAttemptCount = dbRes[0].attempt_count + 1;
+        }
 
-          const action = `${eventName} completed for module ${module}`;
-          const queryInsertLog = `
-          INSERT INTO standardlog (user_id, eventname, action)
-          VALUES (?, ?, ?)
-        `;
+        const queryInsertNewAttempt = `
+        INSERT INTO quiz_attempt (user_id, result, attempt_count, assessment_type, attempt_timestamp, score, moduleid)
+        VALUES (?, ?, ?, ?, NOW(), ?, ?)
+      `;
 
-          db.query(
-            queryInsertLog,
-            [user_id, eventName, action],
-            (logErr, logResult) => {
+        db.query(
+          queryInsertNewAttempt,
+          [
+            user_id,
+            JSON.stringify(result),
+            newAttemptCount,
+            ass_id,
+            totalScore,
+            module,
+          ],
+          (insertErr) => {
+            if (insertErr) {
+              console.log(insertErr);
+              return res.json({ error: "Error inserting new attempt" });
+            }
+
+            // Log the event
+            let eventName = ass_id == 1 ? "Pre-Assessment" : "Post-Assessment";
+            const action = `${eventName} completed for module ${module}`;
+            const queryInsertLog = `
+            INSERT INTO standardlog (user_id, eventname, action)
+            VALUES (?, ?, ?)
+          `;
+
+            db.query(queryInsertLog, [user_id, eventName, action], (logErr) => {
               if (logErr) {
                 console.log(logErr);
                 return res
@@ -545,13 +708,13 @@ export function saveQuizAttempt(req, res) {
                   .json({ error: "Error logging the event" });
               }
 
-              // Step 5: After inserting the log, retrieve all attempts for the user and assessment_type
+              // Retrieve and return all attempts
               const queryRetrieveAllAttempts = `
-            SELECT * 
-            FROM quiz_attempt
-            WHERE user_id = ? AND assessment_type = ? AND moduleid = ?
-            ORDER BY attempt_timestamp DESC
-          `;
+              SELECT * 
+              FROM quiz_attempt
+              WHERE user_id = ? AND assessment_type = ? AND moduleid = ?
+              ORDER BY attempt_timestamp DESC
+            `;
 
               db.query(
                 queryRetrieveAllAttempts,
@@ -564,7 +727,6 @@ export function saveQuizAttempt(req, res) {
                     });
                   }
 
-                  // Process each attempt to add counts for total and correct answers
                   const attemptsWithCounts = allAttempts.map((attempt) => {
                     let parsedResult;
                     try {
@@ -577,32 +739,29 @@ export function saveQuizAttempt(req, res) {
                       parsedResult = [];
                     }
 
-                    // Count the total answers and correct answers
-                    const totalAnswers = parsedResult.length;
-                    const correctAnswers = parsedResult.filter(
+                    const correctAnswersAttempt = parsedResult.filter(
                       (question) => question.correct
                     ).length;
 
-                    // Return the attempt with counts
                     return {
                       ...attempt,
-                      totalAnswers,
-                      correctAnswers,
+                      totalAnswers: totalQuestions,
+                      correctAnswers: correctAnswersAttempt,
                     };
                   });
 
-                  // Return all the attempts in the response with counts
                   return res.json({
                     message: "Quiz attempt and log saved successfully",
-                    score,
-                    attempts: attemptsWithCounts, // Return attempts with counts
+                    totalScore,
+                    correctAnswers, // Include correct answers count
+                    attempts: attemptsWithCounts,
                   });
                 }
               );
-            }
-          );
-        }
-      );
-    }
-  );
+            });
+          }
+        );
+      }
+    );
+  }
 }
