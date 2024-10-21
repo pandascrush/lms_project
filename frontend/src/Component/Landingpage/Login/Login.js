@@ -4,21 +4,23 @@ import "./Login.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { Toast } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import imlogin from "../../../Asset/bannerlog.jpg";
+
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [showRegisterModal, setShowRegisterModal] = useState(false); // Modal state
   const navigate = useNavigate();
 
   const emailPattern = /^[a-z][a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   const validateInput = () => {
     let valid = true;
 
-    // Validate email
     if (!username) {
       setUsernameError("Username is required");
       valid = false;
@@ -29,7 +31,6 @@ function Login() {
       setUsernameError("");
     }
 
-    // Validate password
     if (!password) {
       setPasswordError("Password is required");
       valid = false;
@@ -47,9 +48,6 @@ function Login() {
 
     const loginData = { email: username, password };
 
-    // console.log(loginData);
-
-    // axios.defaults.withCredentials = true;
     try {
       setIsLoading(true); // Start loading
       await axios
@@ -57,10 +55,9 @@ function Login() {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data.message);
-
-          const { user, token } = res.data; // Assuming response includes user and token
-          const { role_id, user_id } = user;
+          const { user, token } = res.data;
+          const { role_id, user_id, company_id } = user;
+          console.log(res);
 
           if (res.data.message === "Email and password are required") {
             toast.error("Email and password are required");
@@ -73,8 +70,8 @@ function Login() {
           } else if (res.data.message === "login success") {
             if (role_id === 4) {
               navigate(`/user/${user_id}`);
-            } else if (role_id === 1) {
-              navigate(`/admindashboard/${user_id}`);
+            } else if (role_id === 5) {
+              navigate(`/admindashboard/${company_id}/dashboard`);
             } else if (role_id === 2) {
               navigate(`/instructordashboard/${user_id}/courselist`);
             }
@@ -83,11 +80,6 @@ function Login() {
         .catch((err) => {
           console.log(err);
         });
-
-      // Store token if needed (e.g., localStorage or state)
-      // localStorage.setItem('authToken', token);
-      // toast.success("Login successful!");
-      // Navigate based on role_id
     } catch (err) {
       console.error(err);
       toast.error("Invalid email or password");
@@ -97,14 +89,25 @@ function Login() {
   };
 
   const handleRegisterClick = () => {
+    setShowRegisterModal(true); // Show the modal
+  };
+
+  const handleCloseModal = () => {
+    setShowRegisterModal(false); // Close the modal
+  };
+
+  const handleIndividualLogin = () => {
     navigate("/register");
+  };
+
+  const handleBusinessLogin = () => {
+    navigate("/business_register");
   };
 
   return (
     <div className="container-fluid p-0 m-0">
       <div className="row p-0 m-0">
         <div className="col-lg-5 d-none d-lg-block p-0 m-0">
-          {/* Image section - occupies full space */}
           <img src={imlogin} className="login-image" alt="Login Banner" />
         </div>
         <div className="col-lg-7 col-sm-12">
@@ -173,7 +176,7 @@ function Login() {
                   <div className="form-group button-container">
                     <button
                       type="submit"
-                      className="rounded-3 subbtn"
+                      className="rounded-3 subbtn1"
                       disabled={isLoading}
                     >
                       {isLoading ? "Logging in..." : "Sign In"}
@@ -194,6 +197,24 @@ function Login() {
           </div>
         </div>
       </div>
+
+      {/* Modal for Register Selection */}
+      <Modal show={showRegisterModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Account Type</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Please select the type of account you want to create:</p>
+          <div className="d-flex justify-content-around">
+            <Button variant="primary" onClick={handleIndividualLogin}>
+              Individual
+            </Button>
+            <Button variant="secondary" onClick={handleBusinessLogin}>
+              Business
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

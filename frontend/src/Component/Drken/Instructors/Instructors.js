@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DrKen from "../../../Asset/face.png";
 import "./Instructor.css";
-import cert1 from "../../../Asset/3dcomputer.png";
-import cert2 from "../../../Asset/3dspine.png";
-import cert3 from "../../../Asset/3dcertificate.png";
-import starticon from "../../../Asset/star.png";
+import cert1 from "../../../Asset/boardcert.jpg";
+import cert2 from "../../../Asset/spinepicture.png";
+import cert3 from "../../../Asset/HSS.jpg";
+import AOS from "aos";
+import "aos/dist/aos.css";
 function Instructors() {
+
+  useEffect(() => {
+    AOS.init();
+  }, []);;
   return (
     <div className="container">
       <div className="row">
         <h1 className="authortext my-5 text-center">Author Introduction</h1>
-        <div className="col-sm-12 col-lg-6">
+        <div className="col-sm-12 col-lg-6"  data-aos="fade-right" data-aos-offset="30" data-aos-easing="ease-in-sine" data-aos-duration="200">
           <img src={DrKen} alt="About Dr.Ken Hansraj,M.D" className="drimg" />
         </div>
-        <div className="col-sm-12 col-lg-6 aboutDr mt-5">
+        <div className="col-sm-12 col-lg-6 aboutDr mt-5" data-aos="fade-left" data-aos-offset="30" data-aos-easing="ease-in-sine" data-aos-duration="200">
           <h2 className="Drtext my-4">Dr.Ken Hansraj,M.D</h2>
           <p className="abtken">
             For more than 20 years, Dr. Ken Hansraj has dedicated his life to
@@ -49,14 +54,12 @@ function Instructors() {
       </div>
 
       <div className="row">
-        <div className="col-sm-12 col-lg-6">
-          <div className="certificatecards rounded-4">
-            <div className="row px-2 py-2">
-              <div className="col-3 text-start">
-                <h3 className="certifiedheading mt-4">Professional Training</h3>
-              </div>
-              <div className="col">
-                <img src={cert1} />
+        <div className="col-sm-12 col-lg-6" data-aos="flip-left" data-aos-offset="30" data-aos-easing="ease-in-sine" data-aos-duration="600">
+          <div className="certificatecards  rounded-4">
+            <div className="row px-0 px-md-2 py-4">
+              <div className="col text-center">
+                <h3 className="certifiedheading my-2">Professional Training</h3>
+                <img src={cert1} className="imparts" data-aos="zoom-in-up" data-aos-offset="30" data-aos-easing="ease-in-sine" data-aos-duration="1000"/>
               </div>
             </div>
 
@@ -92,40 +95,30 @@ function Instructors() {
           </div>
         </div>
 
-        <div className="col-sm-12 col-lg-6">
+        <div className="col-sm-12 col-lg-6" data-aos="flip-right" data-aos-offset="30" data-aos-easing="ease-in-sine" data-aos-duration="600">
           <div className="rounded-4 certificatecards">
-            <div className="row rounded-3 px-5 py-2">
-              <div className="col text-start">
+            <div className="row rounded-3 px-2 py-2">
+              <div className="col text-center">
                 <h3 className="certifiedheading mt-4">
-                  Board <br />
-                  Certifications
+                  Board Certifications
                 </h3>
-              </div>
-              <div className="col">
-                <img src={cert3} className="imgcertificate" />
+                <img src={cert3} className="imparts" data-aos="zoom-in-up" data-aos-offset="30" data-aos-easing="ease-in-sine" data-aos-duration="1000"/>
               </div>
             </div>
-            <div className="text-start px-5 py-2">
-              <p>
-                <img src={starticon} className="px-2" alt="*" />
-                American Board of Orthopedic Surgeons
-              </p>
-              <p>
-                <img src={starticon} className="px-2" alt="*" />
-                American Board of Minimally Invasive Spinal Medicine and Surgery
-              </p>
-              <p>
-                <img src={starticon} className="px-2" alt="*" />
-                National Board of Medical Examiners
-              </p>
+            <div className="text-start px-5">
+              <ul>
+                <li>American Board of Orthopedic Surgeons</li>
+                <li> American Board of Minimally Invasive Spinal Medicine and Surgery</li>
+                <li>National Board of Medical Examiners</li>
+              </ul>
             </div>
           </div>
           <div className="rounded-4 certificatecards my-4">
             <div className="row rounded-3 px-4 ">
-              <h3 className="certifiedheading mt-3">
+              <h3 className="certifiedheading mt-3 py-1">
                 Professional Affiliations
               </h3>
-              <div className="col-sm-9 text-start my-4 order-2 order-lg-1">
+              <div className="col-sm-8 text-start my-3 order-2 order-lg-1">
                 <div>
                   <ul>
                     <li>
@@ -141,8 +134,8 @@ function Instructors() {
                   </ul>
                 </div>
               </div>
-              <div className="col-sm-3 order-1 order-lg-2 d-flex justify-content-center">
-                <img src={cert2} className="sm-mt-0 md-mt-5" />
+              <div className="col-sm-4 order-1 order-lg-2 d-flex justify-content-center" data-aos="fade-in-down" data-aos-offset="200" data-aos-easing="ease-in-sine" data-aos-duration="200">
+                <img src={cert2} className="sm-mt-0 md-mt-5 imparts imp1" />
               </div>
             </div>
           </div>
@@ -151,5 +144,4 @@ function Instructors() {
     </div>
   );
 }
-
 export default Instructors;

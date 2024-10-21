@@ -62,6 +62,12 @@ import DashBoardProfile, {
   DashBoardPayment,
 } from "./Component/User/Dash/Dash";
 import { Edit } from "./Component/User/Profile/Edit";
+import { Dashboard } from "./Component/Admin/Dashboard/Dashboard";
+import CompanyRegister from "./Component/Landingpage/CompanyRegister/CompanyRegister";
+import { LicensePurchase } from "./Component/Admin/LicensePurchase/LicensePurchase";
+import { CheckPayment } from "./Component/Admin/CheckPayment/CheckPayment";
+import { NeftPayment } from "./Component/Admin/NeftPayment/NeftPayment";
+import InvitedRegister from "./Component/Landingpage/InvitedRegister/InvitedRegister";
 
 // import RichTextEditor from './Component/Instructor/Richtexteditor/Richtexteditor';
 
@@ -72,6 +78,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/inv_register/:id" element={<InvitedRegister />} />
+          <Route path="/business_register" element={<CompanyRegister />} />
           {/* <Route path="/" element={[<Menubar />, <Banner />, <Footer />]} /> */}
 
           <Route
@@ -117,6 +125,10 @@ function App() {
             <Route path="courseupdate" element={<Courseupdation />} />
             <Route path="admincredential" element={<AdminCredential />} />
             <Route path="category" element={<Categorycreation />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="purlicense" element={<LicensePurchase />} />
+            <Route path="check/:quantity" element={<CheckPayment />} />
+            <Route path="neft/:quantity" element={<NeftPayment />} />
           </Route>
 
           <Route
@@ -193,7 +205,10 @@ function App() {
             element={[<Drmenubar />, <CourseVideos />]}
           />
           {/* User Route */}
-          <Route path="/user/:id/profile" element={[<DrmenubarUser/>,<DashBoardProfile />]} />
+          <Route
+            path="/user/:id/profile"
+            element={[<DrmenubarUser />, <DashBoardProfile />]}
+          />
           <Route path="/user/:id/message" element={<DashBoardMessage />} />
           <Route path="/user/:id/payment" element={<DashBoardPayment />} />
           <Route path="/user/:id/editprofile" element={<Edit />} />

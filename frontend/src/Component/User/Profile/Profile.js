@@ -78,7 +78,7 @@ export function Indiviualdashboardmain() {
             {
               label: "Working Hours",
               data: hoursData,
-              backgroundColor: "#802626", // Update to the desired color
+              backgroundColor: "#001040", // Update to the desired color
               borderWidth: 1,
             },
           ],

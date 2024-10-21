@@ -9,3 +9,15 @@
     color: red !important;
 }
 
+th{
+    background-color: #001040 !important;
+}
+
+th a{
+    color: #fff !important;
+    text-decoration: none;
+}
+tr td{
+background-color: #d4e6ef;
+}
+

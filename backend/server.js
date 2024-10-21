@@ -10,6 +10,7 @@ import quizRouter from "./routes/Course/quiz.routes.mjs";
 import userRouter from "./routes/User/user.routes.mjs";
 import cookieParser from "cookie-parser";
 import paymentRouter from "./routes/Payment/payment.routes.mjs";
+import adminRouter from "./routes/admin/admin.routes.mjs";
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,7 @@ app.use("/course", courseRoute);
 app.use("/quiz", quizRouter);
 app.use("/user", userRouter);
 app.use("/payment", paymentRouter);
+app.use("/admin", adminRouter);
 app.use("/uploads", express.static("uploads"));
 
 //richtext

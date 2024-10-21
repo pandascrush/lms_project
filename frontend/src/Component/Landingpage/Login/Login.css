@@ -11,7 +11,7 @@
 
 .forget-password-link {
   text-decoration: none;
-  color: #802626;
+  color: #001040;
   font-size: 14px;
 }
 .passlink {
@@ -59,7 +59,7 @@
 }
 
 .error-text {
-  color: #802626;
+  color: #001040;
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -121,17 +121,14 @@
 }
 
 .register-link {
-  color: #802626;
+  color: #001040;
   cursor: pointer;
 }
 
 .logpara {
-  color: #802626;
+  color: #001040;
 }
-.signinbtn {
-  background-color: #802626;
-  color: #fff;
-}
+
 .frmcontrol{
   width: 100% !important;
   padding: 10px;
@@ -142,14 +139,24 @@
   outline: none;
 }
 .login-image {
-  width: 100%;           /* Full width of the column */
-  height: 120vh;         /* Full height of the viewport */
-  object-fit: cover;     /* Ensures the image covers the entire area */
-  margin: 0;             /* Removes any margin */
-  padding: 0;            /* Removes any padding */
-  display: block;        /* Ensure image is displayed as a block element */
+  width: 100%;           
+  height: 120vh;        
+  object-fit: cover;     
+  margin: 0;            
+  padding: 0;            
+  display: block;        
 }
-
+.subbtn1{
+  background-color: #f99420;
+  padding: 10px;
+  font-weight: 600;
+  color: #fff;
+}
+.subbtn1:hover{
+  background-color: #fff;
+  color: #001040;
+  border: 2px solid #f99420;
+}
 
 @media (max-width:426px){
   .LoginApp {

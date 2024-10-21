@@ -1,64 +1,3 @@
-// import React from 'react';
-// import { motion } from 'framer-motion';
-// import './Adminsidebar.css';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faHome, faUser,faBars,faFile,faPowerOff,faLaptopFile } from '@fortawesome/free-solid-svg-icons';
-// import { Link } from 'react-router-dom';
-
-// const sidebarVariants = {
-//   open: { width: '200px' },
-//   closed: { width: '50px' },
-// };
-
-// const linkVariants = {
-//   open: { opacity: 1, display: 'block' },
-//   closed: { opacity: 0, display: 'none' },
-// };
-
-// function Adminsidebar() {
-//   const [isOpen, setIsOpen] = React.useState(false);
-
-//   const toggleSidebar = () => {
-//     setIsOpen(!isOpen);
-//   };
-
-//   return (
-//     <motion.div
-//       className="sidebar"
-//       initial={false}
-//       animate={isOpen ? 'open' : 'closed'}
-//       variants={sidebarVariants}>
-//       <div className="toggle-btn" onClick={toggleSidebar}>
-//         <FontAwesomeIcon icon={faBars} />
-//       </div>
-//       <ul>
-//         <li>
-//             <Link to={""}><FontAwesomeIcon icon={faHome} className='mx-1 text-light'/></Link>
-//             <motion.span variants={linkVariants}>Home</motion.span>
-//         </li>
-//         <li>
-//             <Link to="/"> <FontAwesomeIcon icon={faLaptopFile} className='mx-1 text-light'/></Link>
-//             <motion.span variants={linkVariants} to={"/"}>Courses</motion.span>
-//         </li>
-//         <li>
-//             <Link to="/"> <FontAwesomeIcon icon={faFile} className='mx-1 text-light'/></Link>
-//             <motion.span variants={linkVariants} to={"/"}>Add Courses</motion.span>
-//         </li>
-//         <li>
-//             <Link to=""><FontAwesomeIcon icon={faUser} className='mx-1 text-light'/></Link>
-//             <motion.span variants={linkVariants} to={"/"}>Participants</motion.span>
-//         </li>
-//         <li>
-//             <Link to="/"><FontAwesomeIcon icon={faPowerOff} className='mx-1 text-light'/></Link>
-//             <motion.span variants={linkVariants} to={"/"}>Logout</motion.span>
-//         </li>
-//       </ul>
-//     </motion.div>
-//   );
-// }
-
-// export default Adminsidebar;
-
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import "./Adminsidebar.css";
@@ -71,6 +10,7 @@ import {
   faPowerOff,
   faFileLines,
   faLayerGroup,
+  faDriversLicense,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -142,17 +82,28 @@ function Adminsidebar({ isOpen, toggleSidebar }) {
       </div>
       <ul>
         <li>
-          <Link to={`/admindashboard/${id}/coursedetail`}>
+          <Link to={`/admindashboard/${id}/dashboard`}>
             <FontAwesomeIcon icon={faHome} className="mx-1 text-light " />
             <motion.span
               variants={linkVariants}
               className="text-white text-decoration-none "
             >
-              Home
+              Dashboard
             </motion.span>
           </Link>
         </li>
         <li>
+          <Link to={`/admindashboard/${id}/purlicense`}>
+            <FontAwesomeIcon icon={faDriversLicense} className="mx-1 text-light " />
+            <motion.span
+              variants={linkVariants}
+              className="text-white text-decoration-none "
+            >
+              Purchase License
+            </motion.span>
+          </Link>
+        </li>
+        {/* <li>
           <Link to={`/admindashboard/${id}/admincredential`}>
             <FontAwesomeIcon icon={faUser} className="mx-1 text-light" />
             <motion.span
@@ -195,7 +146,7 @@ function Adminsidebar({ isOpen, toggleSidebar }) {
               Add Courses
             </motion.span>
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link onClick={handleLogout}>
             <FontAwesomeIcon icon={faPowerOff} className="mx-1 text-light" />

@@ -47,7 +47,7 @@ function DrmenubarUser() {
   };
 
   return (
-    <Navbar expand="lg" className="navbarcontenttext my-4">
+    <Navbar expand="lg" className="navbarcontenttext py-4">
       <Container>
         <Navbar.Brand as={NavLink} to="/">
           <img src={Mainlogo} alt="Main Logo" className="ms-5 ms-lg-5" />
@@ -88,7 +88,7 @@ function DrmenubarUser() {
               Badge
             </Nav.Link>
 
-            <div className="search-bar d-flex align-items-center px-5 mt-2">
+            <div className="search-bar d-flex align-items-center px-5 mt-2 bg-light">
               <FontAwesomeIcon icon={faSearch} className="search-icon" />
               <input
                 type="search"
@@ -145,7 +145,7 @@ function DrmenubarUser() {
               Badge
             </NavLink>
 
-            <div className="search-bar d-none d-lg-flex align-items-center p-2">
+            <div className="search-bar d-none d-lg-flex align-items-center p-2 bg-light">
               <FontAwesomeIcon icon={faSearch} className="search-icon" />
               <input
                 type="search"

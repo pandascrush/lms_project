@@ -14,9 +14,9 @@ const Question = () => {
   const [correctOption, setCorrectOption] = useState("");
   const [options, setOptions] = useState([
     { option: "", feedback: "" },
-    { option: "", feedback: "" },
-    { option: "", feedback: "" },
-    { option: "", feedback: "" },
+    // { option: "", feedback: "" },
+    // { option: "", feedback: "" },
+    // { option: "", feedback: "" },
   ]);
   const [showFeedback, setShowFeedback] = useState([
     false,
@@ -33,6 +33,7 @@ const Question = () => {
   const [matchLeft, setMatchLeft] = useState([""]); // State for left side items
   const [matchRight, setMatchRight] = useState([""]); // State for right side items
   const editorRef = useRef(null);
+  const [correctOptions, setCorrectOptions] = useState([]);
 
   const { id } = useParams();
 
@@ -169,6 +170,7 @@ const Question = () => {
     formData.append("correctOption", correctOption);
     formData.append("selectedModuleId", selectedModuleId);
     formData.append("parentModuleId", parentModuleId);
+    formData.append("correct",JSON.stringify(correctOptions))
 
     if (questionType === "multiple_choice" || questionType === "true/false") {
       formData.append("options", JSON.stringify(options)); // Append options
@@ -178,13 +180,18 @@ const Question = () => {
       formData.append("keywords", JSON.stringify(keywords)); // Append keywords for descriptive questions
     }
 
+    if (questionType === "check") {
+      console.log(correctOptions);
+      formData.append("options", JSON.stringify(options)); // Append keywords for descriptive questions
+    }
+
     if (questionType === "match_following") {
       const matches = matchLeft.map((left, index) => ({
         leftItem: left,
         rightItem: matchRight[index],
       }));
-      formData.append("matches", JSON.stringify(matches));  // Append the matches
-    }    
+      formData.append("matches", JSON.stringify(matches)); // Append the matches
+    }
 
     console.log(questionType);
     console.log(formData);
@@ -263,36 +270,11 @@ const Question = () => {
             >
               <option value="multiple choice">Multiple Choice</option>
               <option value="description">Description</option>
-              <option value="true/false">True/False</option>
+              {/* <option value="true/false">True/False</option> */}
               <option value="match_following">match_following</option>
+              <option value="check">Multi Select</option>
             </select>
           </div>
-          {/* <div className="mx-2">
-            <div
-              style={{ display: "flex", alignItems: "center" }}
-              className="border border-2"
-            >
-              <label
-                htmlFor="file-upload"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  marginRight: "10px",
-                }}
-              >
-                <FaUpload className="iconclr" />
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept=".xlsx, .xls"
-                  onChange={handleFileUpload}
-                  style={{ display: "none" }}
-                />
-                <span className="fw-bold">Upload File</span>
-              </label>
-            </div>
-          </div> */}
         </div>
 
         <JoditEditor
@@ -305,7 +287,88 @@ const Question = () => {
           onBlur={handleEditorChange}
         />
 
-        {questionType === "true/false" && (
+        {questionType === "check" && (
+          <div style={{ marginTop: "10px" }}>
+            {options.map((optionObj, index) => (
+              <div key={index} style={{ marginBottom: "20px" }}>
+                <label htmlFor={`option${index + 1}`}>
+                  Option {index + 1}:
+                </label>
+                <input
+                  type="text"
+                  placeholder={`Option ${String.fromCharCode(65 + index)}`} // A, B, C, D, etc.
+                  value={optionObj.option}
+                  onChange={(e) =>
+                    handleOptionChange(index, "option", e.target.value)
+                  }
+                />
+                <button
+                  className="m-3 feedbackbtn rounded-2"
+                  onClick={() => toggleFeedback(index)}
+                >
+                  {showFeedback[index] ? "Hide Feedback" : "Add Feedback"}
+                </button>
+                {showFeedback[index] && (
+                  <div className="feedback" style={{ marginTop: "10px" }}>
+                    <label>Feedback for Option {index + 1}:</label>
+                    <JoditEditor
+                      value={optionObj.feedback}
+                      config={{
+                        readonly: false,
+                        toolbar: true,
+                      }}
+                      onBlur={(newContent) =>
+                        handleOptionChange(index, "feedback", newContent)
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Add the "+" button to add new options dynamically */}
+            <div className="add-option-btn mt-3">
+              <button className="btn btn-outline-danger" onClick={addOption}>
+                <FaPlus /> Add Option
+              </button>
+            </div>
+
+            {/* Checkbox for correct options */}
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+              <label>Select Correct Options:</label>
+              <div style={{ marginLeft: "10px" }}>
+                {options.map(
+                  (option, index) =>
+                    option.option.trim() && (
+                      <div key={index}>
+                        <input
+                          type="checkbox"
+                          id={`correctOption${index}`}
+                          checked={correctOptions.includes(option.option)} // Check if this option is in the correctOptions array
+                          onChange={(e) => {
+                            const updatedCorrectOptions = e.target.checked
+                              ? [...correctOptions, option.option] // Add the option if checked
+                              : correctOptions.filter(
+                                  (opt) => opt !== option.option // Remove the option if unchecked
+                                );
+                            setCorrectOptions(updatedCorrectOptions);
+                          }}
+                        />
+                        <label
+                          htmlFor={`correctOption${index}`}
+                          style={{ marginLeft: "8px" }}
+                        >
+                          {option.option}
+                        </label>
+                      </div>
+                    )
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* {questionType === "true/false" && (
           <div className="true-false-options" style={{ marginTop: "10px" }}>
             <div className="d-flex justify-content-around">
               <div>
@@ -344,7 +407,7 @@ const Question = () => {
               </select>
             </div>
           </div>
-        )}
+        )} */}
 
         {questionType === "match_following" && (
           <div style={{ marginTop: "10px" }}>

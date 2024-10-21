@@ -5,7 +5,7 @@ table{
     border: none;
 }
 tr th {
-    background-color: #6705AD;
+    background-color: #001040;
     color: #fff;
     font-size: 24px;
     font-weight: 500;
@@ -18,15 +18,14 @@ tr td{
 }
 
 tbody tr {
-    background-color: #F2DFFF;
-    color: #6705AD;
-   
+    background-color: #001040;
+    color: #001040;
     font-size: 16px;
 }
 
 .arrowsize{
     font-size: 30px;
-    color: #6705AD;
+    color: #001040;
 }
 .responsive-table {
     width: 70%;

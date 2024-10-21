@@ -192,11 +192,34 @@ function CourseVideos() {
     });
 
     // Mark the question as answered
-    setAnsweredQuestions((prev) => {
-      const updatedSet = new Set(prev);
-      updatedSet.add(questionId); // Add only the main questionId to the answered set
-      return updatedSet;
+    // setAnsweredQuestions((prev) => {
+    //   const updatedSet = new Set(prev);
+    //   updatedSet.add(questionId); // Add only the main questionId to the answered set
+    //   return updatedSet;
+    // });
+    setAnsweredQuestions((prev) => new Set(prev).add(currentIndex));
+    console.log(answeredQuestions);
+  };
+
+  const handleCheckboxChange = (questionId, option, event) => {
+    const isChecked = event.target.checked;
+    setSelectedOptions((prevSelectedOptions) => {
+      const currentSelections = prevSelectedOptions[questionId] || [];
+      if (isChecked) {
+        // Add option to array for this question if checked
+        return {
+          ...prevSelectedOptions,
+          [questionId]: [...currentSelections, option],
+        };
+      } else {
+        // Remove option from array if unchecked
+        return {
+          ...prevSelectedOptions,
+          [questionId]: currentSelections.filter((opt) => opt !== option),
+        };
+      }
     });
+    setAnsweredQuestions((prev) => new Set(prev).add(currentIndex));
   };
 
   const handleSubmitPreAssessment = () => {
@@ -204,6 +227,7 @@ function CourseVideos() {
     const result = []; // For multiple choice questions
     const match = []; // For match-the-following questions
     const desc = []; // For descriptive questions
+    const check = []; // For checkbox questions
 
     questions.forEach((question) => {
       // Handle multiple choice questions
@@ -212,7 +236,7 @@ function CourseVideos() {
         result.push({
           question_id: question.id,
           user_answer: userAnswer || null,
-          correct: userAnswer === question.correct_answer, // Uncomment if needed
+          correct: userAnswer === question.correct_answer,
         });
       }
 
@@ -220,11 +244,10 @@ function CourseVideos() {
       else if (question.question_type === "match") {
         const matchAnswers = question.match_subquestions.map((subq) => {
           const userAnswer =
-            selectedOptions[`${question.id}_${subq.subquestion_id}`]; // Retrieve based on questionId + subquestionId
+            selectedOptions[`${question.id}_${subq.subquestion_id}`];
           return {
             subquestion_id: subq.subquestion_id,
             user_answer: userAnswer || null,
-            // correct: userAnswer === subq.correct_answer,
           };
         });
 
@@ -242,11 +265,21 @@ function CourseVideos() {
           user_answer: userAnswer || null,
         });
       }
+
+      // Handle checkbox questions
+      else if (question.question_type === "check") {
+        const userAnswers = selectedOptions[question.id];
+        check.push({
+          question_id: question.id,
+          user_answers: userAnswers || [],
+        });
+      }
     });
 
     console.log(result);
     console.log(match);
     console.log(desc);
+    console.log(check);
 
     // API submission
     axios
@@ -258,6 +291,7 @@ function CourseVideos() {
           result,
           match,
           desc,
+          check,
         }
       )
       .then((res) => {
@@ -265,6 +299,7 @@ function CourseVideos() {
         if (res.data.message === "Quiz attempt and log saved successfully") {
           setAttempts(res.data.attempts);
           setShowScoreCard(true);
+          console.log(res.data);
         } else {
           toast.error("Error saving quiz");
         }
@@ -273,12 +308,14 @@ function CourseVideos() {
         console.log(err);
       });
   };
+  // console.log(attempts);
 
   const handleSubmitPostAssessment = () => {
     const userId = id === undefined || id === "undefined" ? 0 : id;
     const result = []; // For multiple choice questions
     const match = []; // For match-the-following questions
     const desc = []; // For descriptive questions
+    const check = []; // For checkbox questions
 
     questions.forEach((question) => {
       // Handle multiple choice questions
@@ -287,7 +324,7 @@ function CourseVideos() {
         result.push({
           question_id: question.id,
           user_answer: userAnswer || null,
-          correct: userAnswer === question.correct_answer, // Uncomment if needed
+          correct: userAnswer === question.correct_answer,
         });
       }
 
@@ -295,11 +332,10 @@ function CourseVideos() {
       else if (question.question_type === "match") {
         const matchAnswers = question.match_subquestions.map((subq) => {
           const userAnswer =
-            selectedOptions[`${question.id}_${subq.subquestion_id}`]; // Retrieve based on questionId + subquestionId
+            selectedOptions[`${question.id}_${subq.subquestion_id}`];
           return {
             subquestion_id: subq.subquestion_id,
             user_answer: userAnswer || null,
-            // correct: userAnswer === subq.correct_answer,
           };
         });
 
@@ -317,11 +353,21 @@ function CourseVideos() {
           user_answer: userAnswer || null,
         });
       }
+
+      // Handle checkbox questions
+      else if (question.question_type === "check") {
+        const userAnswers = selectedOptions[question.id];
+        check.push({
+          question_id: question.id,
+          user_answers: userAnswers || [],
+        });
+      }
     });
 
     console.log(result);
     console.log(match);
     console.log(desc);
+    console.log(check);
 
     // API submission
     axios
@@ -333,6 +379,7 @@ function CourseVideos() {
           result,
           match,
           desc,
+          check,
         }
       )
       .then((res) => {
@@ -654,7 +701,7 @@ function CourseVideos() {
                             fontFamily: "Montserrat, sans-serif",
                             fontSize: "20px",
                             margin: "10px 0px",
-                            color: "#6705AD",
+                            color: "#001040",
                           }}
                         >
                           Summary of Your Previous Attempts
@@ -694,7 +741,7 @@ function CourseVideos() {
                                   </td>
 
                                   <td>{`${attempt.score} / 100`}</td>
-                                  <td>{`${attempt.correctAnswers} / ${attempt.totalAnswers}`}</td>
+                                  <td>{`${attempt.correct_question} / ${attempt.total_question}`}</td>
                                   <td>
                                     <button
                                       style={{
@@ -748,29 +795,33 @@ function CourseVideos() {
                         {/* Render based on question type */}
                         {question.question_type === "multiple_choice" && (
                           <div className="options">
-                            {question.options.map((optionObj, index) => (
-                              <div key={index} className="option d-flex">
-                                <input
-                                  type="radio"
-                                  id={`option-${question.id}-${index}`}
-                                  name={`question-${question.id}`} // Ensure unique name for each question
-                                  value={optionObj.option}
-                                  checked={
-                                    selectedOptions[question.id] ===
-                                    optionObj.option
-                                  }
-                                  onChange={(e) =>
-                                    handleOptionChange(question.id, null, e)
-                                  } // No subquestionId for MCQ
-                                />
-                                <label
-                                  className="mx-2"
-                                  htmlFor={`option-${question.id}-${index}`}
-                                >
-                                  {optionObj.option}
-                                </label>
-                              </div>
-                            ))}
+                            {question.options
+                              .filter(
+                                (optionObj) => optionObj.option.trim() !== ""
+                              ) // Filter out empty options
+                              .map((optionObj, index) => (
+                                <div key={index} className="option d-flex py-2">
+                                  <input
+                                    type="radio"
+                                    id={`option-${question.id}-${index}`}
+                                    name={`question-${question.id}`} // Ensure unique name for each question
+                                    value={optionObj.option}
+                                    checked={
+                                      selectedOptions[question.id] ===
+                                      optionObj.option
+                                    }
+                                    onChange={(e) =>
+                                      handleOptionChange(question.id, null, e)
+                                    } // No subquestionId for MCQ
+                                  />
+                                  <label
+                                    className="mx-2"
+                                    htmlFor={`option-${question.id}-${index}`}
+                                  >
+                                    {optionObj.option}
+                                  </label>
+                                </div>
+                              ))}
                           </div>
                         )}
 
@@ -835,12 +886,53 @@ function CourseVideos() {
                           </div>
                         )}
 
+                        {/* Render checkbox question */}
+                        {question.question_type === "check" && (
+                          <div className="options">
+                            {question.options
+                              .filter(
+                                (optionObj) => optionObj.option.trim() !== ""
+                              ) // Filter out empty options
+                              .map((optionObj, index) => (
+                                <div key={index} className="option d-flex">
+                                  <input
+                                    type="checkbox"
+                                    id={`check-${question.id}-${index}`}
+                                    name={`question-${question.id}`}
+                                    value={optionObj.option}
+                                    checked={
+                                      Array.isArray(
+                                        selectedOptions[question.id]
+                                      ) &&
+                                      selectedOptions[question.id].includes(
+                                        optionObj.option
+                                      )
+                                    }
+                                    onChange={(e) =>
+                                      handleCheckboxChange(
+                                        question.id,
+                                        optionObj.option,
+                                        e
+                                      )
+                                    }
+                                  />
+                                  <label
+                                    className="mx-2"
+                                    htmlFor={`check-${question.id}-${index}`}
+                                  >
+                                    {optionObj.option}
+                                  </label>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+
                         {/* Navigation Buttons */}
                         <div className="d-flex justify-content-between my-3">
                           <button
                             className="prevbtn rounded-2"
                             onClick={handlePrevious}
-                            disabled={currentIndex === 0}
+                            // disabled={currentIndex === 0}
                           >
                             Previous
                           </button>
@@ -851,11 +943,11 @@ function CourseVideos() {
                             }}
                             className="btn btn-success"
                             onClick={handleNext}
-                            disabled={
-                              currentIndex === questions.length - 1
-                                ? false // Enable the submit button for the last question
-                                : !answeredQuestions.has(question.id)
-                            } // Enable only if question is answered for others
+                            // disabled={
+                            //   currentIndex === questions.length - 1 || currentIndex <= 1
+                            //     ? false // Enable the submit button for the last question
+                            //     : !answeredQuestions.has(question.id)
+                            // } // Enable only if question is answered for others
                           >
                             {currentIndex === questions.length - 1
                               ? "Submit"
@@ -981,14 +1073,15 @@ function CourseVideos() {
         </div>
       </div>
       <Modal show={showModal} onHide={handleClose} centered>
-        <div style={{ backgroundColor: "#aa2af9" }}>
+        <div style={{ backgroundColor: "#001040" }}>
           <Modal.Header
             closeButton
             style={{ borderBottom: "none" }}
+            className="custom-close"
           ></Modal.Header>
           <Modal.Body
             className="d-flex flex-column justify-content-center align-items-center text-light"
-            style={{ backgroundColor: "#aa2af9", padding: "20px" }}
+            style={{ backgroundColor: "#001040", padding: "20px" }}
           >
             <h5 className="mb-4">Well done! Chapter {module} is complete</h5>
             <p className="text-center">Rate Lesson</p>
@@ -1008,7 +1101,7 @@ function CourseVideos() {
               style={{
                 textDecoration: "none",
                 color: "white",
-                backgroundColor: "#6705AD",
+                backgroundColor: "#ffa200",
                 border: "1px solid white",
                 padding: "10px",
               }}

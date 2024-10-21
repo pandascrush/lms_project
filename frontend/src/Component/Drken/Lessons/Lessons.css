@@ -1,16 +1,19 @@
 .lessoncard{
     background-color: white;
-    color: #3C0B56;
+    color: #001040;
     text-align: left !important;
-    box-shadow: 1px 1px 10px 1px #b889d2;
+    box-shadow: 1px 1px 10px 1px #d4e6ef;
 }
-
+.logbutton{
+    background-color: #001040;
+    color: #fff;
+}
 .lesson{
     max-height: 250px;
 }
 
 .arrowclr,.clrcrd{
-    color: #3C0B56;
+    color: #001040;
 }
 
 @media (max-width:425px){
@@ -37,6 +40,6 @@
     .lessonview{
         display: flex;
         flex-direction: row;
-        color: #6705AD;
+        color: #001040;
     }
 }

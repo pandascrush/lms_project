@@ -29,6 +29,8 @@ function QuestionUpdate() {
         `${process.env.REACT_APP_API_URL}quiz/getmodulequestions/${moduleId}`
       )
       .then((res) => {
+        console.log(res);
+
         setQuestions(res.data.result);
         const initialUpdatedQuestions = {};
         const initialShowFeedbackEditor = {};
@@ -112,119 +114,302 @@ function QuestionUpdate() {
 
   return (
     <>
-       <h2 className="text-center">Update Questions</h2>
-    <div className=" container entirequizpart p-4 rounded-3">
-      {/* Select Box for Modules */}
-      <div>
-        <label className="py-4"><b>Select Module:</b></label><br/>
-        <select value={selectedModuleId} onChange={handleModuleChange}>
-          <option value="">Select Module</option>
-          {modules.map((module) => (
-            <option key={module.moduleid} value={module.moduleid}>
-              {module.modulename}
-            </option>
-          ))}
-        </select>
-      </div>
+      <h2 className="text-center">Update Questions</h2>
+      <div className=" container entirequizpart p-4 rounded-3">
+        {/* Select Box for Modules */}
+        <div>
+          <label className="py-4">
+            <b>Select Module:</b>
+          </label>
+          <br />
+          <select value={selectedModuleId} onChange={handleModuleChange}>
+            <option value="">Select Module</option>
+            {modules.map((module) => (
+              <option key={module.moduleid} value={module.moduleid}>
+                {module.modulename}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Display Questions */}
-      <div className="py-5">
-        <h5>Questions for Selected Module:</h5>
-        {questions.length > 0 ? (
-          <ul>
-            {questions.map((question) => (
-              <li key={question.id}>
-                {/* Rich text editor for question text */}
-                <JoditEditor
-                  value={updatedQuestions[question.id].text}
-                  onBlur={(newText) =>
-                    handleQuestionChange(question.id, "text", newText)
-                  }
-                />
-
-                {/* Display Options with Feedback */}
-                <div>
-                  <h4>Options</h4>
-                  {updatedQuestions[question.id].options.map((opt, index) => (
-                    <div key={index} style={{ marginBottom: "15px" }}>
-                      <label>Option:</label>
-                      <textarea
-                        value={opt.option}
-                        onChange={(e) =>
-                          handleOptionChange(
-                            question.id,
-                            index,
-                            "option",
-                            e.target.value
-                          )
-                        }
-                        rows={3}
-                        cols={40}
-                      />
-
-                      {/* Add Feedback Button */}
-                      <button
-                        style={{
-                          marginLeft: "10px",
-                          backgroundColor: "#001040",
-                          color: "white",
-                          border: "none",
-                          padding: "5px 10px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => toggleFeedbackEditor(question.id, index)}
-                      >
-                        {showFeedbackEditor[`${question.id}_${index}`]
-                          ? "Hide Feedback"
-                          : "Add Feedback"}
-                      </button>
-
-                      {/* Conditionally show rich text editor for feedback */}
-                      {showFeedbackEditor[`${question.id}_${index}`] && (
-                        <div style={{ marginTop: "10px" }}>
-                          <label>Feedback:</label>
-                          <JoditEditor
-                            value={opt.feedback}
-                            onBlur={(newFeedback) =>
-                              handleOptionChange(
-                                question.id,
-                                index,
-                                "feedback",
-                                newFeedback
-                              )
-                            }
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Correct Answer */}
-                <div>
-                  <label>Correct Answer:</label>
-                  <input
-                    type="text"
-                    value={updatedQuestions[question.id].correct_answer}
-                    onChange={(e) =>
-                      handleQuestionChange(
-                        question.id,
-                        "correct_answer",
-                        e.target.value
-                      )
+        {/* Display Questions */}
+        <div className="py-5">
+          <h5>Questions for Selected Module:</h5>
+          {questions.length > 0 ? (
+            <ul>
+              {questions.map((question) => (
+                <li key={question.id}>
+                  {/* Rich text editor for question text */}
+                  <JoditEditor
+                    value={updatedQuestions[question.id].text}
+                    onBlur={(newText) =>
+                      handleQuestionChange(question.id, "text", newText)
                     }
                   />
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No questions available for this module.</p>
-        )}
-      </div>
 
-      <button onClick={handleSubmit} className="subbtn">Update Questions</button>
-    </div>
+                  {/* Descriptive Question Type */}
+                  {question.question_type === "descriptive" && (
+                    <div>
+                      <h4>Multiple Choice Options</h4>
+                      {updatedQuestions[question.id].options.map(
+                        (opt, index) => (
+                          <div key={index} style={{ marginBottom: "15px" }}>
+                            <label>Option:</label>
+                            <textarea
+                              value={opt.option}
+                              onChange={(e) =>
+                                handleOptionChange(
+                                  question.id,
+                                  index,
+                                  "option",
+                                  e.target.value
+                                )
+                              }
+                              rows={3}
+                              cols={40}
+                            />
+
+                            {/* Add Feedback Button */}
+                            <button
+                              style={{
+                                marginLeft: "10px",
+                                backgroundColor: "#001040",
+                                color: "white",
+                                border: "none",
+                                padding: "5px 10px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                toggleFeedbackEditor(question.id, index)
+                              }
+                            >
+                              {showFeedbackEditor[`${question.id}_${index}`]
+                                ? "Hide Feedback"
+                                : "Add Feedback"}
+                            </button>
+
+                            {/* Conditionally show rich text editor for feedback */}
+                            {showFeedbackEditor[`${question.id}_${index}`] && (
+                              <div style={{ marginTop: "10px" }}>
+                                <label>Feedback:</label>
+                                <JoditEditor
+                                  value={opt.feedback}
+                                  onBlur={(newFeedback) =>
+                                    handleOptionChange(
+                                      question.id,
+                                      index,
+                                      "feedback",
+                                      newFeedback
+                                    )
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+
+                  {/* Multiple Choice Question Type */}
+                  {question.question_type === "multiple_choice" && (
+                    <div>
+                      <h4>Multiple Choice Options</h4>
+                      {updatedQuestions[question.id].options.map(
+                        (opt, index) => (
+                          <div key={index} style={{ marginBottom: "15px" }}>
+                            <label>Option:</label>
+                            <textarea
+                              value={opt.option}
+                              onChange={(e) =>
+                                handleOptionChange(
+                                  question.id,
+                                  index,
+                                  "option",
+                                  e.target.value
+                                )
+                              }
+                              rows={3}
+                              cols={40}
+                            />
+
+                            {/* Add Feedback Button */}
+                            <button
+                              style={{
+                                marginLeft: "10px",
+                                backgroundColor: "#001040",
+                                color: "white",
+                                border: "none",
+                                padding: "5px 10px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                toggleFeedbackEditor(question.id, index)
+                              }
+                            >
+                              {showFeedbackEditor[`${question.id}_${index}`]
+                                ? "Hide Feedback"
+                                : "Add Feedback"}
+                            </button>
+
+                            {/* Conditionally show rich text editor for feedback */}
+                            {showFeedbackEditor[`${question.id}_${index}`] && (
+                              <div style={{ marginTop: "10px" }}>
+                                <label>Feedback:</label>
+                                <JoditEditor
+                                  value={opt.feedback}
+                                  onBlur={(newFeedback) =>
+                                    handleOptionChange(
+                                      question.id,
+                                      index,
+                                      "feedback",
+                                      newFeedback
+                                    )
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+
+                  {/* Check Question Type */}
+                  {question.question_type === "check" && (
+                    <div>
+                      <h4>Check Options</h4>
+                      {updatedQuestions[question.id].options.map(
+                        (opt, index) => (
+                          <div key={index} style={{ marginBottom: "15px" }}>
+                            <label>Option:</label>
+                            <textarea
+                              value={opt.option}
+                              onChange={(e) =>
+                                handleOptionChange(
+                                  question.id,
+                                  index,
+                                  "option",
+                                  e.target.value
+                                )
+                              }
+                              rows={3}
+                              cols={40}
+                            />
+
+                            {/* Add Feedback Button */}
+                            <button
+                              style={{
+                                marginLeft: "10px",
+                                backgroundColor: "#001040",
+                                color: "white",
+                                border: "none",
+                                padding: "5px 10px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                toggleFeedbackEditor(question.id, index)
+                              }
+                            >
+                              {showFeedbackEditor[`${question.id}_${index}`]
+                                ? "Hide Feedback"
+                                : "Add Feedback"}
+                            </button>
+
+                            {/* Conditionally show rich text editor for feedback */}
+                            {showFeedbackEditor[`${question.id}_${index}`] && (
+                              <div style={{ marginTop: "10px" }}>
+                                <label>Feedback:</label>
+                                <JoditEditor
+                                  value={opt.feedback}
+                                  onBlur={(newFeedback) =>
+                                    handleOptionChange(
+                                      question.id,
+                                      index,
+                                      "feedback",
+                                      newFeedback
+                                    )
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+
+                  {/* Match the Following Question Type */}
+                  {question.question_type === "match" && (
+                    <div>
+                      <h4>Match the Following</h4>
+                      {updatedQuestions[question.id].options.map(
+                        (opt, index) => (
+                          <div key={index} style={{ marginBottom: "15px" }}>
+                            <label>Left side:</label>
+                            <textarea
+                              value={opt.left}
+                              onChange={(e) =>
+                                handleOptionChange(
+                                  question.id,
+                                  index,
+                                  "left",
+                                  e.target.value
+                                )
+                              }
+                              rows={3}
+                              cols={20}
+                            />
+
+                            <label style={{ marginLeft: "10px" }}>
+                              Right side:
+                            </label>
+                            <textarea
+                              value={opt.right}
+                              onChange={(e) =>
+                                handleOptionChange(
+                                  question.id,
+                                  index,
+                                  "right",
+                                  e.target.value
+                                )
+                              }
+                              rows={3}
+                              cols={20}
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+
+                  {/* Correct Answer (Common for all types) */}
+                  <div>
+                    <label>Correct Answer:</label>
+                    <input
+                      type="text"
+                      value={updatedQuestions[question.id].correct_answer}
+                      onChange={(e) =>
+                        handleQuestionChange(
+                          question.id,
+                          "correct_answer",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No questions available for this module.</p>
+          )}
+        </div>
+
+        <button onClick={handleSubmit} className="subbtn">
+          Update Questions
+        </button>
+      </div>
     </>
   );
 }

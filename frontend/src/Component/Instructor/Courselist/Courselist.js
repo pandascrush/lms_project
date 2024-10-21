@@ -93,7 +93,7 @@ function Courselist() {
                 <strong>Completed:</strong> {e.completed_users} <br />
                 <strong>
                   Active:{" "}
-                  <strong style={{ color: "#802626" }}>
+                  <strong style={{ color: "#001040" }}>
                     {activeCount} Learner{" "}
                   </strong>
                 </strong>

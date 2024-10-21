@@ -5,7 +5,10 @@
 .aboutDr {
   text-align: justify;
 }
-
+.certimg{
+  height: 250px;
+  width: 300px;
+}
 .overviewcontent {
   font-family: "Montserrat", sans-serif !important;
 }
@@ -17,20 +20,42 @@
   text-align: justify;
 }
 .certificatecards {
-  background-color: #fbf3ff;
-  box-shadow: 1px 1px 3px 3px #cecdce;
+  /* background-color: #8DBCD4; */
+  background-color: #d4e6ef;
+  /* box-shadow: 1px 1px 5px 3px #4d89a7; */
 }
 
 .certifiedheading {
   color: #001040;
   font-weight: 700;
 }
+.imp1{
+  min-height: 300px;
+ 
+}
+.imparts{
+  height: 250px;
+  width: 300px;
+}
 
 @media (max-width: 426px) {
   .drimg {
     max-height: 300px;
-    max-width: 300px;
+    max-width: 250px;
   }
+  .imparts{
+    height: 200px;
+    width: 260px;
+  }
+
+  /* .imp1{
+    height: 250px;
+  }
+   */
+.imgcertificate{
+  max-height: 200px;
+  max-width: 250px;
+}
 }
 
 li::marker {
@@ -43,6 +68,13 @@ ul li {
   padding-bottom: 10px;
 }
 
-.imgcertificate {
-  max-height: 150px;
+.imgcertificate{
+  max-height: 300px;
+  max-width: 350px;
 }
+
+.im3{
+  height: 200px;
+}
+
+

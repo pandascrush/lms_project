@@ -109,7 +109,7 @@
 }
 
 .circle.active {
-  background-color: #8d6ba5; /* Background color for the active circle */
+  background-color: #ffa200; /* Background color for the active circle */
   color: #fff;
 }
 
@@ -258,123 +258,26 @@ tr {
 
 /* //lastly added quiz part */
 
-.circular-question-numbers {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
+.quizpart{
+background-color: #d4e6ef !important;
 }
-
-.circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e0e0e0; /* Default background color */
-  color: #000;
-  margin: 0 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.circle.active {
-  background-color: #8d6ba5; /* Background color for the active circle */
-  color: #fff;
-}
-
-.circle.answered {
-  background-color: #001040; /* Green background for answered questions */
-  color: #fff;
-}
-
-.orangecircle {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  border: 1px solid;
-  border: 1px solid orange;
-}
-
-.numberclr {
-  color: #001040;
-  font-size: 1.2rem;
-}
-
-.rightcards {
-  background-color: #f8f9fa;
-}
-
-.profoundhead {
-  color: #001040;
-  font-size: 20px;
-}
-tr {
-  border: 0px !important;
-}
-
-.nxtbtn {
-  color: white;
-  background-color: #020f3f;
-}
-.tabletextpart th {
-  font-size: 15px !important;
-}
-.tabletextpart td {
-  font-size: 14px !important;
-  border: 0px !important;
-}
-
-/* @media (max-width:769px){
-  .quizpart img{
-max-height: 200px;
-max-width: 200px;
-  }
-}
-@media (min-width:770px){
-  .quizpart img{
-    max-height: 200px;
-    max-width: 380px;
-      }
-    }  */
-
-/* @media (max-width: 426px) {
-      .quizpart img {
-        display: block;
-        padding: 0px 10px;
-        min-height: 200px;
-        max-height: 300px;
-        max-width: 250px;
-      }
-    }
-    
-    @media (min-width: 427px) {
-      .quizpart img {
-        display: block;
-        margin: auto;
-        max-height: 200px;
-        max-width: 380px;
-      }
-    }
-     */
-
-@media (max-width: 426px) {
+@media (max-width: 768px) {
   .quizpart img {
     display: block;
     padding: 0px 10px;
-    max-width: 50%; /* Ensure the image does not exceed its container width */
-    height: auto; /* Maintain the aspect ratio by allowing height to adjust */
-    max-height: 300px; /* Ensures the height doesn't exceed 300px */
+    max-width: 50%; 
+    height: auto; 
+    max-height: 350px;
   }
 }
 
-@media (min-width: 427px) {
+@media (min-width: 769px) {
   .quizpart img {
     display: block;
     margin: auto;
-    max-width: 70%; /* Ensures the image scales within its container */
-    height: auto; /* Maintain the aspect ratio automatically */
-    max-height: 200px; /* Ensures height doesn't exceed 200px */
+    max-width: 80%; 
+    height: auto; 
+    max-height: 400px; 
   }
 }
 .sidec {

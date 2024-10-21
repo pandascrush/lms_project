@@ -39,13 +39,6 @@
   text-decoration: none !important;
 }
 
-.navpart:hover {
-  background-color: #001040;
-  color: white !important;
-  border-radius: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
 
 .imglogin {
   height: 32px;
@@ -82,49 +75,43 @@
   font-weight: 400;
 }
 
-/* ///// */
-
-/* Style for the search bar container */
 .search-bar {
   display: flex;
   align-items: center;
   border-radius: 50px;
   padding: 14px 20px !important;
-  box-shadow: 1px 1px 10px 1px #d9d9d9;
 }
 
-/* .navbarcontenttext{
-  letter-spacing: 0.8px;
-} */
-
-.navbarcontenttext .navpart .active-link {
-  color: #2f3047  !important;
-  background-color: red;
+.navbarcontenttext{
+  background-color: #001040;
+}
+.navpart{
+  color: white !important;
+}
+.navpart:hover{
+  color: #ffa200 !important;
 }
 
-/* Additional styling to ensure the text is visible on red background */
-.navbarcontenttext .navpart .active-link:hover {
-  color: #2f3047  !important;
-  background-color: red !important;
-}
 
-/* Make search bar appear at start on small to medium devices */
+
+
+
 @media (max-width: 992px) {
   .search-bar {
-    order: -1; /* Position the search bar before other items */
+    order: -1; 
     width: 100%;
   }
 }
 .custom-dropdown-menu {
-  color: #001040 !important; /* Override default color */
+  color: #001040 !important; 
 }
 
 .custom-dropdown-item {
-  color: #001040 !important; /* Set text color for dropdown items */
+  color: #001040 !important; 
 }
 
 .custom-dropdown-item:hover {
-  background-color: rgba(0, 16, 64, 0.1); /* Optional: change background on hover */
-  color: #001040 !important; /* Ensure text color stays the same on hover */
+  background-color: rgba(0, 16, 64, 0.1);
+  color: #001040 !important; 
 }
 

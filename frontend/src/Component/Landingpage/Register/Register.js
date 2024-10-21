@@ -322,7 +322,7 @@ function Registerpage() {
 
                   <button
                     type="submit"
-                    className="rounded-3 subbtn"
+                    className="rounded-3 subbtn1"
                     disabled={isLoading}
                   >
                     {isLoading ? "Registering..." : "Register"}
@@ -334,7 +334,7 @@ function Registerpage() {
                     Already have an account?{" "}
                     <Link
                       to="/login"
-                      style={{ textDecoration: "none" }}
+                      style={{ textDecoration: "none",fontWeight:"600" }}
                       className="register-link"
                     >
                       Login
