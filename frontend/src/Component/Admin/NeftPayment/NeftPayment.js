@@ -8,7 +8,7 @@ export function NeftPayment() {
   const [amount, setAmount] = useState(amt);
   var { id } = useParams();
   const [email, setEmail] = useState("");
-  const nav = useNavigate()
+  const nav = useNavigate();
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}admin/bussuserdetails/${id}`)
@@ -23,7 +23,7 @@ export function NeftPayment() {
     event.preventDefault();
     var email = document.getElementById("email").value;
     var transactionid = document.getElementById("transactionid").value;
-    alert(transactionid);
+    // alert(transactionid);
     var quantity = document.getElementById("quantity").value;
     var amount = document.getElementById("amount").value;
 
@@ -41,7 +41,7 @@ export function NeftPayment() {
         .then((res) => {
           if (res.data.status === "inserted") {
             alert("Thank you! your license will update after Admin Approval");
-            nav(`admindashboard/${id}/purlicense`)
+            window.location.assign(`/admindashboard/${id}/purlicense`);
           } else {
             alert("Sorry refill the details");
             window.location.reload();

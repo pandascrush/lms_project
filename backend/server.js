@@ -53,6 +53,11 @@ app.get("/api/test", (req, res) => {
   res.json({ msg: "hello world" });
 });
 
+app.post("/webhook", (req, res) => {
+  console.log("Webhook received");
+  res.status(200).send("OK");
+});
+
 // Start server
 app.listen(`${process.env.PORT}`, () => {
   console.log(`Server running on port ${port}`);

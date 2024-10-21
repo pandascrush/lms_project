@@ -33,7 +33,7 @@ export function LicensePurchase() {
 
   // Checkout function for online payment
   function checkout(itemPrice, quantity) {
-    fetch("http://172.16.32.52:5000/create-checkout-session", {
+    fetch(`${process.env.REACT_APP_API_URL}admin/create-checkout-session/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

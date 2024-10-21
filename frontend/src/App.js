@@ -68,6 +68,7 @@ import { LicensePurchase } from "./Component/Admin/LicensePurchase/LicensePurcha
 import { CheckPayment } from "./Component/Admin/CheckPayment/CheckPayment";
 import { NeftPayment } from "./Component/Admin/NeftPayment/NeftPayment";
 import InvitedRegister from "./Component/Landingpage/InvitedRegister/InvitedRegister";
+import { Notenrolledfile } from "./Component/Admin/Notenrolledfile/Notenrolledfile";
 
 // import RichTextEditor from './Component/Instructor/Richtexteditor/Richtexteditor';
 
@@ -129,6 +130,7 @@ function App() {
             <Route path="purlicense" element={<LicensePurchase />} />
             <Route path="check/:quantity" element={<CheckPayment />} />
             <Route path="neft/:quantity" element={<NeftPayment />} />
+            <Route path="notenroll" element={<Notenrolledfile />} />
           </Route>
 
           <Route

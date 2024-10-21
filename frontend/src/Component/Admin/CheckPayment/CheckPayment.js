@@ -44,7 +44,7 @@ export function CheckPayment() {
         .then((res) => {
           if (res.data.status === "inserted") {
             alert("Thank you! your license will update after Admin Approval");
-            nav(`admindashboard/${id}/purlicense`);
+            window.location.assign(`admindashboard/${id}/purlicense`);
           } else {
             alert("Sorry refill the details");
             window.location.reload();

@@ -118,9 +118,9 @@ export function Dashboard() {
     const fetchUserStates = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}admin/userstates`
+          `${process.env.REACT_APP_API_URL}admin/userstates/${id}`
         );
-        // console.log(res.data);
+        console.log(res.data);
 
         // setPaidUserCount(res.data.paidUsersCount);
         setActiveData(res.data.activeData);
@@ -159,7 +159,6 @@ export function Dashboard() {
       <tr key={index}>
         <td>{item.name.trim()}</td> {/* Use trim to remove any extra spaces */}
         <td>{item.date ? new Date(item.date).toLocaleString() : "N/A"}</td>{" "}
-        {/* Format date */}
         <td>{item.modules}</td>
         <td>{item.percent}</td>
       </tr>
@@ -305,7 +304,7 @@ export function Dashboard() {
                         <i class="bi bi-arrow-down me-1"></i>-
                         {learnerjoinerpercentage}%
                       </span>
-                      <Link to={`/notenrolled/${id}`}>
+                      <Link to={`/admindashboard/${id}/notenroll`}>
                         <span class="textend">Not Enrolled...</span>
                       </Link>
                     </div>
