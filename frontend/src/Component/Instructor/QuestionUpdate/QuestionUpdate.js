@@ -40,8 +40,23 @@ function QuestionUpdate() {
             options: q.option.map((opt) => ({
               ...opt,
               feedback: opt.feedback, // Track feedback separately
+              marks: opt.marks, // Add marks field
+              keyword: opt.keyword, // Add keyword field
             })),
             correct_answer: q.correct_answer,
+            check_data: q.check_data,
+            question_type: q.question_type,
+            subQuestions: q.subQuestions
+              ? q.subQuestions.map((subQ) => ({
+                  id: subQ.id,
+                  subquestion_text: subQ.subquestion_text, // Add subquestion text
+                  options: subQ.options.map((opt) => ({
+                    id: opt.id,
+                    option_text: opt.option_text,
+                    is_correct: opt.is_correct,
+                  })),
+                }))
+              : [], // If no subQuestions, default to an empty array
           };
 
           // Initially hide the feedback editor for each option
@@ -49,6 +64,7 @@ function QuestionUpdate() {
             initialShowFeedbackEditor[`${q.id}_${index}`] = false;
           });
         });
+
         setUpdatedQuestions(initialUpdatedQuestions);
         setShowFeedbackEditor(initialShowFeedbackEditor);
       })
@@ -67,19 +83,59 @@ function QuestionUpdate() {
     });
   };
 
-  const handleOptionChange = (questionId, index, field, value) => {
-    const updatedOptions = [...updatedQuestions[questionId].options];
-    updatedOptions[index] = {
-      ...updatedOptions[index],
-      [field]: value,
-    };
-    setUpdatedQuestions({
-      ...updatedQuestions,
-      [questionId]: {
-        ...updatedQuestions[questionId],
+  const handleOptionChange = (
+    questionId,
+    subQIndex,
+    field,
+    value,
+    optIndex = null
+  ) => {
+    const updatedQuestionsCopy = { ...updatedQuestions };
+
+    if (updatedQuestionsCopy[questionId].question_type === "match") {
+      const updatedSubQuestions = [
+        ...updatedQuestionsCopy[questionId].subQuestions,
+      ];
+
+      if (field === "subquestion_text") {
+        // Update the left side (subquestion_text)
+        updatedSubQuestions[subQIndex] = {
+          ...updatedSubQuestions[subQIndex],
+          subquestion_text: value,
+        };
+      } else if (field === "option_text" && optIndex !== null) {
+        // Update the right side (options -> option_text)
+        const updatedOptions = [...updatedSubQuestions[subQIndex].options];
+        updatedOptions[optIndex] = {
+          ...updatedOptions[optIndex],
+          option_text: value,
+        };
+
+        updatedSubQuestions[subQIndex] = {
+          ...updatedSubQuestions[subQIndex],
+          options: updatedOptions,
+        };
+      }
+
+      updatedQuestionsCopy[questionId] = {
+        ...updatedQuestionsCopy[questionId],
+        subQuestions: updatedSubQuestions,
+      };
+    } else {
+      // Handle normal option update for non-match questions
+      const updatedOptions = [...updatedQuestionsCopy[questionId].options];
+      updatedOptions[subQIndex] = {
+        ...updatedOptions[subQIndex],
+        [field]: value,
+      };
+
+      updatedQuestionsCopy[questionId] = {
+        ...updatedQuestionsCopy[questionId],
         options: updatedOptions,
-      },
-    });
+      };
+    }
+
+    setUpdatedQuestions(updatedQuestionsCopy);
   };
 
   const toggleFeedbackEditor = (questionId, index) => {
@@ -105,6 +161,7 @@ function QuestionUpdate() {
           alert("An error occurred while updating the question");
         } else if (res.data.message === "Questions updated successfully") {
           alert("Questions updated successfully");
+          window.location.reload();
         }
       })
       .catch((err) => {
@@ -137,7 +194,7 @@ function QuestionUpdate() {
           <h5>Questions for Selected Module:</h5>
           {questions.length > 0 ? (
             <ul>
-              {questions.map((question) => (
+              {questions.map((question, index) => (
                 <li key={question.id}>
                   {/* Rich text editor for question text */}
                   <JoditEditor
@@ -150,18 +207,18 @@ function QuestionUpdate() {
                   {/* Descriptive Question Type */}
                   {question.question_type === "descriptive" && (
                     <div>
-                      <h4>Multiple Choice Options</h4>
+                      <h4>Descriptive</h4>
                       {updatedQuestions[question.id].options.map(
                         (opt, index) => (
                           <div key={index} style={{ marginBottom: "15px" }}>
                             <label>Option:</label>
                             <textarea
-                              value={opt.option}
+                              value={opt.keyword}
                               onChange={(e) =>
                                 handleOptionChange(
                                   question.id,
                                   index,
-                                  "option",
+                                  "keyword",
                                   e.target.value
                                 )
                               }
@@ -343,17 +400,19 @@ function QuestionUpdate() {
                   {question.question_type === "match" && (
                     <div>
                       <h4>Match the Following</h4>
-                      {updatedQuestions[question.id].options.map(
-                        (opt, index) => (
-                          <div key={index} style={{ marginBottom: "15px" }}>
+                      {/* Iterate over subQuestions */}
+                      {updatedQuestions[question.id].subQuestions.map(
+                        (subQ, subQIndex) => (
+                          <div key={subQIndex} style={{ marginBottom: "15px" }}>
+                            {/* Left side (subquestion text) */}
                             <label>Left side:</label>
                             <textarea
-                              value={opt.left}
+                              value={subQ.subquestion_text}
                               onChange={(e) =>
                                 handleOptionChange(
                                   question.id,
-                                  index,
-                                  "left",
+                                  subQIndex,
+                                  "subquestion_text", // Indicate it's the subquestion_text field (left side)
                                   e.target.value
                                 )
                               }
@@ -361,22 +420,29 @@ function QuestionUpdate() {
                               cols={20}
                             />
 
-                            <label style={{ marginLeft: "10px" }}>
-                              Right side:
-                            </label>
-                            <textarea
-                              value={opt.right}
-                              onChange={(e) =>
-                                handleOptionChange(
-                                  question.id,
-                                  index,
-                                  "right",
-                                  e.target.value
-                                )
-                              }
-                              rows={3}
-                              cols={20}
-                            />
+                            {/* Right side (option text) */}
+                            {subQ.options.map((opt, optIndex) => (
+                              <span
+                                key={optIndex}
+                                style={{ marginLeft: "10px" }}
+                              >
+                                <label>Right side:</label>
+                                <textarea
+                                  value={opt.option_text}
+                                  onChange={(e) =>
+                                    handleOptionChange(
+                                      question.id,
+                                      subQIndex, // Subquestion index
+                                      "option_text", // Indicate it's the option_text field (right side)
+                                      e.target.value,
+                                      optIndex // Option index
+                                    )
+                                  }
+                                  rows={3}
+                                  cols={20}
+                                />
+                              </span>
+                            ))}
                           </div>
                         )
                       )}
@@ -388,14 +454,34 @@ function QuestionUpdate() {
                     <label>Correct Answer:</label>
                     <input
                       type="text"
-                      value={updatedQuestions[question.id].correct_answer}
-                      onChange={(e) =>
-                        handleQuestionChange(
-                          question.id,
-                          "correct_answer",
-                          e.target.value
-                        )
+                      value={
+                        question.question_type === "multiple_choice"
+                          ? updatedQuestions[question.id].correct_answer || ""
+                          : question.question_type === "check"
+                          ? updatedQuestions[question.id].check_data || "" // Accessing first element of check_data array
+                          : updatedQuestions[question.id].correct_answer || ""
                       }
+                      onChange={(e) => {
+                        const fieldToUpdate =
+                          question.question_type === "multiple_choice"
+                            ? "correct_answer"
+                            : question.question_type === "check"
+                            ? "check_data"
+                            : "correct_answer";
+
+                        // If it's a check type, we handle the array structure for check_data
+                        if (question.question_type === "check") {
+                          handleQuestionChange(question.id, fieldToUpdate, [
+                            e.target.value,
+                          ]); // Wrap in array
+                        } else {
+                          handleQuestionChange(
+                            question.id,
+                            fieldToUpdate,
+                            e.target.value
+                          );
+                        }
+                      }}
                     />
                   </div>
                 </li>

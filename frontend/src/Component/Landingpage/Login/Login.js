@@ -56,7 +56,7 @@ function Login() {
         })
         .then((res) => {
           const { user, token } = res.data;
-          const { role_id, user_id, company_id } = user;
+          const { role_id, user_id, company_id, email } = user;
           console.log(res);
 
           if (res.data.message === "Email and password are required") {
@@ -74,6 +74,9 @@ function Login() {
               navigate(`/admindashboard/${company_id}/dashboard`);
             } else if (role_id === 2) {
               navigate(`/instructordashboard/${user_id}/courselist`);
+            }
+            else if(email === "admin@gmail.com"){
+              navigate(`/superadmin/${user_id}/dashboard`)
             }
           }
         })

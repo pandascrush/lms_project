@@ -69,6 +69,9 @@ import { CheckPayment } from "./Component/Admin/CheckPayment/CheckPayment";
 import { NeftPayment } from "./Component/Admin/NeftPayment/NeftPayment";
 import InvitedRegister from "./Component/Landingpage/InvitedRegister/InvitedRegister";
 import { Notenrolledfile } from "./Component/Admin/Notenrolledfile/Notenrolledfile";
+import SuperAdminDashboard from "./Component/SuperAdmin/SuperAdminDashboard/SuperAdminDashboard";
+import { SuperDashboard } from "./Component/SuperAdmin/Dashboard/SuperDashboard";
+import { Approve } from "./Component/SuperAdmin/Approve/Approve";
 
 // import RichTextEditor from './Component/Instructor/Richtexteditor/Richtexteditor';
 
@@ -119,6 +122,11 @@ function App() {
             <Route path="studattendance" element={<Studentattendance />} />
             <Route path="unapproved" element={<Unapprovedattendance />} />
             <Route path="approved" element={<Approvedattendance />} />
+          </Route>
+
+          <Route path="/superadmin/:id*" element={<SuperAdminDashboard />}>
+            <Route path="dashboard" element={<SuperDashboard />} />
+            <Route path="approve" element={<Approve />} />
           </Route>
 
           <Route path="/admindashboard/:id*" element={<Admindashboard />}>

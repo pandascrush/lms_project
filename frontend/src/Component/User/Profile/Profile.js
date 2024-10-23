@@ -20,6 +20,7 @@ export function Indiviualdashboardmain() {
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
+    profile_image:"",
     completion_percentage: 0,
   });
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -49,7 +50,7 @@ export function Indiviualdashboardmain() {
         const userData = res.data;
         setUser({
           first_name: userData.first_name.trim(),
-          last_name: userData.last_name.trim(),
+          // last_name: userData.last_name.trim(),
           completion_percentage: parseFloat(userData.completion_percentage),
           profile_image: userData.profile_image || face, // Use default image if profile_image is not provided
           role: userData.profession || "Student", // Default to "Student" if role is not provided

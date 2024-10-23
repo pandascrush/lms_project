@@ -14,9 +14,6 @@ const Question = () => {
   const [correctOption, setCorrectOption] = useState("");
   const [options, setOptions] = useState([
     { option: "", feedback: "" },
-    // { option: "", feedback: "" },
-    // { option: "", feedback: "" },
-    // { option: "", feedback: "" },
   ]);
   const [showFeedback, setShowFeedback] = useState([
     false,
